@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+
+USERS_FILE=$DIR/../config/users.nix
+
+cat $USERS_FILE | sed 's|"||g; s|\[ ||g; s| \]||g'
