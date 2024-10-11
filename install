@@ -1,29 +1,22 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-NIX=/nix/var/nix/profiles/default/bin/nix
+HOST=$1
 
-function prompt_continue {
-  read -p "Continue? (y/n): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
-}
-
-if [ ! -e ~/.config/nix ]; then
-  mkdir -p ~/.config
-
-  ln -s $DIR/.config/nix ~/.config/nix
-fi
-
-if ! command -v $NIX 2>&1 >/dev/null; then
-  curl -L https://nixos.org/nix/install | sh
+if [ -z "$HOST" ]; then
+  echo "No host provided"
+  exit 1
 fi
 
 read -p "Enter space-delimited users ($(./cmd/get-users)): " users
 
-[ "$users" ] && ./cmd/set-users $users
+if [ "$users" ]; then
+  ./cmd/set-users $users
+fi
 
-$NIX run nix-darwin -- switch --flake .#$1
-
-sudo reboot
+if [[ "$(uname -s)" == Darwin* ]]; then
+  exec ./cmd/mac-install $HOST
+fi
