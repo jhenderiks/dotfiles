@@ -1,8 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
-  config = lib.mkIf pkgs.stdenv.isDarwin {
-    cfg.homeManagerShared.home.sessionPath = [ "/opt/homebrew/bin" ];
+  config = {
+    _user.config.home-manager.home.sessionPath = [ "/opt/homebrew/bin" ];
 
     homebrew = {
       enable = true;
@@ -12,6 +12,8 @@
         cleanup = "zap";
         upgrade = true;
       };
+
+      casks = config._macos.homebrew.casks;
     };
 
     system.activationScripts.preUserActivation.text = ''

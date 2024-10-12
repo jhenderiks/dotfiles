@@ -3,14 +3,15 @@
 {
   options = {
     brave = {
-      enable = lib.mkEnableOption {
+      enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
     };
   };
 
   config = lib.mkIf config.brave.enable {
-    chromium.enable = true;
-    chromium.package = pkgs.brave;
+    _macos.homebrew.casks = [ "brave-browser" ];
+    _nixos.environment.systemPackages = [ pkgs.brave ];
   };
 }

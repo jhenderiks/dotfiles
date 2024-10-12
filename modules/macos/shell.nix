@@ -17,16 +17,15 @@ let
             echo "Try again"
           done
         ''
-      ) config.cfg.users
+      ) config._user.users
     )}
   '';
-  shellPath = "/run/current-system/sw/bin/${config.cfg.shell}";
+  shellPath = "/run/current-system/sw/bin/${config._user.shell}";
 in {
-  config = lib.mkIf pkgs.stdenv.isDarwin {
-    programs.bash.enable = true;
+  config = {
     programs.zsh.enable = true;
 
-    cfg.homeManagerShared = {
+    _user.config.home-manager = {
       programs.zsh.enable = true;
 
       programs.kitty = {

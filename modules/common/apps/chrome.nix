@@ -11,34 +11,31 @@ let
 in {
   options = {
     chrome = {
-      enable = lib.mkEnableOption {
+      enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
     };
   };
 
-  config = lib.mkIf config.chrome.enable (lib.mkMerge [
-    # (lib.mkIf pkgs.stdenv.isDarwin {
-    #   system.activationScripts.preUserActivation.text = lib.concatStrings [
-    #     ''
-    #       if [ ! -d ${macExtDir} ]; then
-    #         sudo mkdir -p ${macExtDir}
+  config = lib.mkIf config.chrome.enable {
+    _unfreePackages = [ "google-chrome" ];
+
+    environment.systemPackages = [ pkgs.google-chrome ];
+
+    # system.activationScripts.preUserActivation.text = lib.concatStrings [
+    #   ''
+    #     if [ ! -d ${macExtDir} ]; then
+    #       sudo mkdir -p ${macExtDir}
+    #     fi
+    #   ''
+    #   (lib.concatMapStrings (
+    #     ext: ''
+    #       if [ ! -f ${macExtFile ext} ]; then
+    #         sudo sh -c 'echo "${macExtFileJson}" > ${macExtFile ext}'
     #       fi
     #     ''
-    #     (lib.concatMapStrings (
-    #       ext: ''
-    #         if [ ! -f ${macExtFile ext} ]; then
-    #           sudo sh -c 'echo "${macExtFileJson}" > ${macExtFile ext}'
-    #         fi
-    #       ''
-    #     ) config.chromium.extensions)
-    #   ];
-    # })
-    {
-      chromium.enable = true;
-      chromium.package = pkgs.google-chrome;
-
-      cfg.unfreePackages = [ "google-chrome" ];
-    }
-  ]);
+    #   ) config.chromium.extensions)
+    # ];
+  };
 }

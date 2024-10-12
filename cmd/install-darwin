@@ -1,0 +1,23 @@
+#!/bin/sh
+
+NIX="/nix/var/nix/profiles/default/bin/nix"
+
+HOST=$1
+
+if [ ! "$HOST" ]; then
+  fail "No host provided"
+fi
+
+if [ ! -e ~/.config/nix ]; then
+  mkdir -p ~/.config
+
+  ln -s $REPO_ROOT/.config/nix ~/.config/nix
+fi
+
+if [ ! "$($NIX --version)" ]; then
+  curl -L https://nixos.org/nix/install | sh
+fi
+
+$NIX run nix-darwin switch --flake "$REPO_ROOT#$HOST"
+
+sudo reboot

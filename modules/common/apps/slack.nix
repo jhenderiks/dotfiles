@@ -3,15 +3,15 @@
 {
   options = {
     slack = {
-      enable = lib.mkEnableOption {
+      enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
     };
   };
 
   config = lib.mkIf config.slack.enable {
-    environment.systemPackages = with pkgs; [ slack ];
-
-    cfg.unfreePackages = [ "slack" ];
+    _unfreePackages = [ "slack" ];
+    environment.systemPackages = [ pkgs.slack ];
   };
 }

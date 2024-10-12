@@ -3,21 +3,16 @@
 {
   options = {
     bitwarden = {
-      enable = lib.mkEnableOption {
+      enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
     };
   };
 
-  config = lib.mkIf config.bitwarden.enable (lib.mkMerge [
-    (lib.mkIf pkgs.stdenv.isLinux {
-      environment.systemPackages = with pkgs; [ bitwarden-desktop ];
-    })
-    (lib.mkIf pkgs.stdenv.isDarwin {
-      homebrew.casks = [ "bitwarden" ];
-    })
-    {
-      chromium.extensions = [ "nngceckbapebfimnlniiiahkandclblb" ];
-    }
-  ]);
+  config = lib.mkIf config.bitwarden.enable {
+    _macos.homebrew.casks = [ "bitwarden" ];
+    _nixos.environment.systemPackages = [ pkgs.bitwarden-desktop ];
+    _unfreePackages = [ "bitwarden" ];
+  };
 }

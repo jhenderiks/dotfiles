@@ -2,7 +2,7 @@
 
 {
   options = {
-    kitty = {
+    zoom = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -10,7 +10,8 @@
     };
   };
 
-  config = lib.mkIf config.kitty.enable {
-    environment.systemPackages = [ pkgs.kitty ];
+  config = lib.mkIf config.zoom.enable {
+    _unfreePackages = [ "zoom" ];
+    environment.systemPackages = [ pkgs.zoom-us ];
   };
 }

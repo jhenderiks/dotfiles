@@ -1,0 +1,50 @@
+#!/bin/sh
+
+HOST=$1
+
+if [ ! "$HOST" ]; then
+  fail "No host provided"
+fi
+
+HOST_DIR="$REPO_ROOT/hosts/$HOST"
+
+if [ ! -d "$HOST_DIR" ]; then
+  mkdir -p $HOST_DIR
+fi
+
+DEFAULT_FILE="$HOST_DIR/default.nix"
+DOTCONFIG_FILE="$HOST_DIR/.config.nix"
+
+if [ ! -f "$DEFAULT_FILE" ]; then
+cat << EOF > $DEFAULT_FILE
+{ inputs, ... }:
+
+inputs.<INPUT>.lib.<OS>System { # TODO
+  system = ""; # TODO
+  specialArgs = { inherit inputs; };
+  modules = [
+    # inputs.disko.nixosModules.disko # TODO
+    inputs.home-manager.<OS>Modules.home-manager # TODO
+    # inputs.impermanence.nixosModules.impermanence # TODO
+    # inputs.mac-app-util.darwinModules.default # TODO
+    # inputs.nixos-hardware.nixosModules.<HARDWARE> # TODO
+    ../../modules/common
+    # ../../modules/macos # TODO
+    # ../../modules/nixos # TODO
+    ./.config.nix
+    # ./.passwd.nix # TODO
+    # ./hardware.nix # TODO
+    {
+      # TODO
+    }
+  ];
+}
+EOF
+fi
+
+if [ ! -f "$DOTCONFIG_FILE" ]; then
+  echo "{}" > $DOTCONFIG_FILE
+fi
+
+git add --intent-to-add $DOTCONFIG_FILE
+git update-index --assume-unchanged $DOTCONFIG_FILE

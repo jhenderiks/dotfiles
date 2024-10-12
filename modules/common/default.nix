@@ -3,48 +3,36 @@
 {
   imports = [
     ./apps
+    ./services
     ./shell
-    ./user
+    ./options.nix
   ];
 
-  options = {
-    cfg = lib.mkOption {
-      type = lib.types.submodule {
-        options = {
-          homeBase = lib.mkOption {
-            type = lib.types.str;
-            default = "/home";
-          };
+  config = {
+    _user.config.home-manager = {
+      home.stateVersion = "24.11";
 
-          homeManagerShared = lib.mkOption {
-            type = lib.types.submodule {
-              options = {
-                home = lib.mkOption { type = lib.types.attrs; };
-                programs = lib.mkOption { type = lib.types.attrs; };
-              };
-            };
-          };
+      xdg = {
+        enable = true;
 
-          shell = lib.mkOption {
-            type = lib.types.str;
-            default = "fish";
-          };
-
-          unfreePackages = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [];
-          };
-
-          users = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ "justin" ];
+        userDirs = {
+          enable = true;
+          createDirectories = true;
+          desktop = "$HOME/desktop";
+          documents = "$HOME/docs";
+          download = "$HOME/downloads";
+          music = "$HOME/media/music";
+          pictures = "$HOME/media/images";
+          publicShare = "$HOME/public";
+          templates = "$HOME/templates";
+          videos = "$HOME/media/videos";
+          extraConfig = {
+            XDG_DEV_DIR = "$HOME/dev";
           };
         };
       };
     };
-  };
 
-  config = {
     home-manager = {
       backupFileExtension = "backup";
       useGlobalPkgs = true;
@@ -52,7 +40,5 @@
     };
 
     nix.settings.experimental-features = "nix-command flakes";
-
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.cfg.unfreePackages;
   };
 }

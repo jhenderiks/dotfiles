@@ -3,30 +3,27 @@
 {
   options = {
     vscode = {
-      enable = lib.mkEnableOption {
+      enable = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
     };
   };
 
-  config = lib.mkIf config.vscode.enable (lib.mkMerge [
-    (lib.mkIf pkgs.stdenv.isLinux {
-      environment.systemPackages = with pkgs; [
-        (vscode-with-extensions.override {
-          vscodeExtensions = with vscode-extensions; [
-            bbenoist.nix
-          ];
-        })
-      ];
+  config = lib.mkIf config.vscode.enable {
+    _macos.homebrew.casks = [ "visual-studio-code" ];
 
-      cfg.unfreePackages = [
-        "vscode"
-        "vscode-with-extensions"
-      ];
-    })
+    _nixos.environment.systemPackages = with pkgs; [
+      (vscode-with-extensions.override {
+        vscodeExtensions = with vscode-extensions; [
+          bbenoist.nix
+        ];
+      })
+    ];
 
-    (lib.mkIf pkgs.stdenv.isDarwin {
-      homebrew.casks = [ "visual-studio-code" ];
-    })
-  ]);
+    _unfreePackages = [
+      "vscode"
+      "vscode-with-extensions"
+    ];
+  };
 }

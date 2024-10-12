@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
 {
-  config = lib.mkIf pkgs.stdenv.isDarwin {
+  config = {
     system = {
       stateVersion = 5;
 

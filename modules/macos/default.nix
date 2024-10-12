@@ -7,15 +7,15 @@
     ./system.nix
   ];
 
-  config = lib.mkIf pkgs.stdenv.isDarwin {
-    environment.shells = [ pkgs.${config.cfg.shell} ];
-
+  config = {
     # environment.variables = { XDG_CONFIG_HOME = "~/.config"; };
     
-    cfg.homeBase = "/Users";
+    _user.homeBase = lib.mkForce "/Users";
+
+    security.pam.enableSudoTouchIdAuth = true;
 
     services.nix-daemon.enable = true;
 
-    security.pam.enableSudoTouchIdAuth = true;
+    system.stateVersion = 5;
   };
 }

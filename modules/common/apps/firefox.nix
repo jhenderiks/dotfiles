@@ -2,7 +2,7 @@
 
 {
   options = {
-    kitty = {
+    firefox = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -10,7 +10,8 @@
     };
   };
 
-  config = lib.mkIf config.kitty.enable {
-    environment.systemPackages = [ pkgs.kitty ];
+  config = lib.mkIf config.firefox.enable {
+    _macos.homebrew.casks = [ "firefox" ];
+    _nixos.programs.firefox.enable = true;
   };
 }
