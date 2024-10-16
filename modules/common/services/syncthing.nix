@@ -37,6 +37,18 @@ in {
 
         default = {};
       };
+
+      # folders = mkOption {
+      #   default = {};
+      #   type = types.attrsOf (
+      #     types.submodule ({ name, ... }: {
+      #       options = {
+      #         enable = mkEnableOption "";
+      #         path = mkOption { type = types.str; default = "~/${name}"; };
+      #       };
+      #     })
+      #   );
+      # };
     };
   };
 

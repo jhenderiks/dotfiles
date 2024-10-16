@@ -28,12 +28,10 @@ in {
     _user.config.home-manager = {
       programs.zsh.enable = true;
 
-      programs.kitty = {
-        enable = true;
-        settings = {
-          macos_traditional_fullscreen = true;
-          macos_quit_when_last_window_closed = true;
-        };
+      programs.kitty.settings = {
+        # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
+        macos_traditional_fullscreen = true;
+        macos_quit_when_last_window_closed = true;
       };
     };
 

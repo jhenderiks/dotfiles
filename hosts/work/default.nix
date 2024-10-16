@@ -5,8 +5,6 @@ inputs.darwin.lib.darwinSystem {
   system = "aarch64-darwin";
   specialArgs = { inherit inputs; };
   modules = [
-    inputs.home-manager.darwinModules.home-manager
-    inputs.mac-app-util.darwinModules.default
     ../../modules/common
     ../../modules/macos
     ./.config.nix

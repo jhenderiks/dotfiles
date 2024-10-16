@@ -1,6 +1,10 @@
 
 {
   inputs = {
+    catppuccin.url = "github:catppuccin/nix";
+
+    catppuccin-vsc.url = "github:catppuccin/vscode";
+
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,6 +25,11 @@
     mac-app-util.url = "github:hraban/mac-app-util";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };

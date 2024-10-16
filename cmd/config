@@ -23,10 +23,6 @@ inputs.<INPUT>.lib.<OS>System { # TODO
   system = ""; # TODO
   specialArgs = { inherit inputs; };
   modules = [
-    # inputs.disko.nixosModules.disko # TODO
-    inputs.home-manager.<OS>Modules.home-manager # TODO
-    # inputs.impermanence.nixosModules.impermanence # TODO
-    # inputs.mac-app-util.darwinModules.default # TODO
     # inputs.nixos-hardware.nixosModules.<HARDWARE> # TODO
     ../../modules/common
     # ../../modules/macos # TODO

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 {
   imports = [
@@ -10,6 +10,12 @@
 
   config = {
     _user.config.home-manager = {
+      imports = [
+        inputs.catppuccin.homeManagerModules.catppuccin
+      ];
+
+      catppuccin.enable = true;
+
       home.stateVersion = "24.11";
 
       xdg = {

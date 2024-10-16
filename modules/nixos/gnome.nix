@@ -11,6 +11,14 @@
   };
 
   config = lib.mkIf config.gnome.enable {
+    _user.config.home-manager.dconf = {
+      enable = true;
+      settings = {
+        "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+        "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
+      };
+    };
+
     environment = {
       gnome.excludePackages = with pkgs; [
         gnome-tour
@@ -30,14 +38,6 @@
         nautilus
         simple-scan
       ];
-    };
-
-    _user.config.home-manager.dconf = {
-      enable = true;
-      settings = {
-        "org/gnome/desktop/interface".color-scheme = "prefer-dark";
-        "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
-      };
     };
 
     services = {

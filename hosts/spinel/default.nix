@@ -4,14 +4,11 @@ inputs.nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = { inherit inputs; };
   modules = [
-    inputs.disko.nixosModules.disko
-    inputs.home-manager.nixosModules.home-manager
-    inputs.impermanence.nixosModules.impermanence
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
     ../../modules/common
     ../../modules/nixos
-    ./.config.nix
-    ./.passwd.nix
+    ./.config.nix # TODO: get rid of this
+    ./.passwd.nix # TODO: get rid of this
     ./hardware.nix
     {
       _hostname = "spinel";

@@ -1,7 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 {
   imports = [
+    inputs.catppuccin.nixosModules.catppuccin
+    inputs.home-manager.nixosModules.home-manager
     ./disk
     ./gnome.nix
   ];
@@ -12,6 +14,8 @@
       extraGroups = [ "docker" "wheel" ];
       hashedPassword = config._user.hashedPassword;
     };
+
+    catppuccin.enable = true;
 
     system.stateVersion = "24.11";
 
