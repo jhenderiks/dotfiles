@@ -84,16 +84,17 @@ in {
       };
     };
 
-    environment.sessionVariables = {
+
+    environment.shellAliases.code = lib.mkIf (config.vscode.package == pkgs.vscodium) "codium";
+
+    environment.systemPackages = [ config.vscode.package ];
+
+    environment.variables = {
       VSCODE_GALLERY_SERVICE_URL = "https://marketplace.visualstudio.com/_apis/public/gallery";
       VSCODE_GALLERY_ITEM_URL = "https://marketplace.visualstudio.com/items";
       VSCODE_GALLERY_CACHE_URL = "https://vscode.blob.core.windows.net/gallery/index";
       VSCODE_GALLERY_CONTROL_URL = "";
     };
-
-    environment.shellAliases.code = lib.mkIf (config.vscode.package == pkgs.vscodium) "codium";
-
-    environment.systemPackages = [ config.vscode.package ];
 
     nixpkgs.overlays = [inputs.catppuccin-vsc.overlays.default];
   };

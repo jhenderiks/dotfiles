@@ -10,7 +10,7 @@ let
   mkNoDefault = type: lib.mkOption { type = type; };
 
   osCommonOptions = with lib.types; {
-    _user = mk attrs {};
+    _user = mk attrs {}; # TODO: need this?
     environment.systemPackages = mkListOf package [];
     programs = mkAttrsOf attrs {};
     services = mkAttrsOf attrs {};

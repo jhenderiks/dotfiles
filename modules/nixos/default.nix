@@ -6,6 +6,8 @@
     inputs.home-manager.nixosModules.home-manager
     ./disk
     ./gnome.nix
+    ./hyprland.nix
+    ./kde.nix
   ];
 
   config = {
@@ -15,7 +17,14 @@
       hashedPassword = config._user.hashedPassword;
     };
 
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+
     catppuccin.enable = true;
+
+    hardware.bluetooth.enable = true;
+    hardware.bluetooth.powerOnBoot = true;
+
+    networking.networkmanager.enable = true;
 
     system.stateVersion = "24.11";
 

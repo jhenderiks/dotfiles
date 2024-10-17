@@ -21,6 +21,8 @@ inputs.nixpkgs.lib.nixosSystem {
       disk.main.impermanence.enable = true;
 
       gnome.enable = true;
+      hyprland.enable = true;
+      # kde.enable = true;
 
       # bitwarden.enable = true;
       brave.enable = true;
