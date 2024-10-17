@@ -10,16 +10,16 @@ inputs.darwin.lib.darwinSystem {
     ./.config.nix
     {
       bitwarden.enable = true;
-      brave.enable = true;
+      # brave.enable = true;
       chrome.enable = true;
-      firefox.enable = true;
-      keepassxc.enable = true;
+      # firefox.enable = true;
+      # keepassxc.enable = true;
       kitty.enable = true;
-      ledger-live.enable = true;
+      # ledger-live.enable = true;
       slack.enable = true;
       spotify.enable = true;
       vscode.enable = true;
-      zoom.enable = true;
+      # zoom.enable = true;
     }
   ];
 }

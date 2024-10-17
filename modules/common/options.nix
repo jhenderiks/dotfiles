@@ -27,8 +27,8 @@ let
 
   osConfig = builtins.mapAttrs (
     name: value: lib.mkMerge [
-      (lib.mkIf pkgs.stdenv.isDarwin config._macos.${name})
-      (lib.mkIf pkgs.stdenv.isLinux config._nixos.${name})
+      (if pkgs.stdenv.isDarwin then config._macos.${name} else {})
+      (if pkgs.stdenv.isLinux then config._nixos.${name} else {})
     ]
   ) osCommonOptions;
 
