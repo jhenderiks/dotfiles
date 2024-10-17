@@ -66,6 +66,7 @@ in {
           # "breadcrumbs.enabled" = true;
           "editor.tabSize" = 2;
           "editor.wordWrap" = "on";
+          "files.insertFinalNewline" = true;
           # "explorer.confirmDelete" = false;
           "security.workspace.trust.banner" = "never";
           "security.workspace.trust.enabled" = false;

@@ -12,7 +12,6 @@
 
   config = lib.mkIf config.firefox.enable {
     macos.homebrew.casks = [ "firefox" ];
-    # _nixos.user.home-manager.programs.firefox.enable = true;
     nixos.environment.systemPackages = [ pkgs.firefox ];
   };
 }

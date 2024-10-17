@@ -31,17 +31,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
   };
 
   outputs = inputs: let
     args = {
       inherit inputs;
-      fn = {
-        # mkUserAttrSet = (attrSet: builtins.listToAttrs (
-        #   map (user: { name = user; value = { test = "foo"; }; }) users
-        # ));
-      };
     };
   in {
     darwinConfigurations = {

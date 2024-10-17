@@ -7,30 +7,6 @@ let
   };
   mkAttrsOf = type: mk (lib.types.attrsOf type);
   mkListOf = type: mk (lib.types.listOf type);
-  mkNoDefault = type: lib.mkOption { type = type; };
-
-  osCommonOptions = with lib.types; {
-    # user = mk attrs {}; # TODO: need this?
-    environment.systemPackages = mkListOf package [];
-    # programs = mkAttrsOf attrs {};
-    services = mkAttrsOf attrs {};
-  };
-
-  osModule = with lib; osSpecificOptions: mkOption {
-    type = types.submoduleWith {
-      modules = [
-        { options = osCommonOptions; }
-        { options = osSpecificOptions; }
-      ];
-    };
-  };
-
-  osConfig = builtins.mapAttrs (
-    name: value: lib.mkMerge [
-      (if pkgs.stdenv.isDarwin then config._macos.${name} else {})
-      (if pkgs.stdenv.isLinux then config.nixos.${name} else {})
-    ]
-  ) (if pkgs.stdenv.isDarwin then options.macos else options.nixos);#osCommonOptions;
 
   reduceUsers = fn: builtins.listToAttrs (
     map (

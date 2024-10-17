@@ -1,4 +1,4 @@
-{ config, inputs, lib, pkgs, ... }:
+{ config, inputs, lib, options, pkgs, ... }:
 
 let
   macosConfig = builtins.mapAttrs (
@@ -9,6 +9,7 @@ in {
     inputs.home-manager.darwinModules.home-manager
     inputs.mac-app-util.darwinModules.default
     ./homebrew.nix
+    ./keyboard.nix
     ./shell.nix
     ./system.nix
   ];

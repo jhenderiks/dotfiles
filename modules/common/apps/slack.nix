@@ -11,7 +11,7 @@
   };
 
   config = lib.mkIf config.slack.enable {
-    unfreePackages = [ "slack" ];
     environment.systemPackages = [ pkgs.slack ];
+    unfreePackages = [ "slack" ];
   };
 }

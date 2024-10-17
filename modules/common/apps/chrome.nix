@@ -19,9 +19,9 @@ in {
   };
 
   config = lib.mkIf config.chrome.enable {
-    unfreePackages = [ "google-chrome" ];
-
     environment.systemPackages = [ pkgs.google-chrome ];
+
+    unfreePackages = [ "google-chrome" ];
 
     # system.activationScripts.preUserActivation.text = lib.concatStrings [
     #   ''
