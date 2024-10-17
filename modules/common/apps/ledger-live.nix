@@ -11,9 +11,9 @@
   };
 
   config = lib.mkIf config.ledger-live.enable {
-    _macos.homebrew.casks = [ "ledger-live" ];
+    macos.homebrew.casks = [ "ledger-live" ];
 
-    _nixos = {
+    nixos = {
       environment.systemPackages = [ pkgs.ledger-live-desktop ];
 
       services.udev.extraRules = ''

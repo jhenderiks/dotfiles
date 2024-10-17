@@ -2,7 +2,7 @@
 
 {
   config = {
-    _user.config.home-manager.home.sessionPath = [ "/opt/homebrew/bin" ];
+    user.home-manager.home.sessionPath = [ "/opt/homebrew/bin" ];
 
     homebrew = {
       enable = true;
@@ -13,7 +13,7 @@
         upgrade = true;
       };
 
-      casks = config._macos.homebrew.casks;
+      casks = config.macos.homebrew.casks;
     };
 
     system.activationScripts.preUserActivation.text = ''

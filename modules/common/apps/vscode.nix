@@ -21,10 +21,9 @@ in {
   };
 
   config = lib.mkIf config.vscode.enable {
-    _macos.vscode.package = pkgs.vscode;
-    _unfreePackages = [ "visual-studio-code" ];
+    unfreePackages = [ "visual-studio-code" ];
 
-    _user.config.home-manager = {
+    user.home-manager = {
       programs.vscode = {
         enable = true;
 

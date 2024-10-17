@@ -11,7 +11,7 @@ inputs.nixpkgs.lib.nixosSystem {
     ./.passwd.nix # TODO: get rid of this
     ./hardware.nix
     {
-      _hostname = "spinel";
+      hostname = "spinel";
 
       boot.loader.systemd-boot.enable = true;
 

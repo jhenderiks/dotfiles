@@ -17,15 +17,16 @@ let
             echo "Try again"
           done
         ''
-      ) config._user.users
+      ) config.user.names
     )}
   '';
-  shellPath = "/run/current-system/sw/bin/${config._user.shell}";
+  shellPath = "/run/current-system/sw/bin/${config.user.shell}";
 in {
   config = {
+    programs.bash.enable = true;
     programs.zsh.enable = true;
 
-    _user.config.home-manager = {
+    user.home-manager = {
       programs.zsh.enable = true;
 
       programs.kitty.settings = {

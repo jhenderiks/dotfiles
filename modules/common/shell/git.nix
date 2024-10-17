@@ -6,9 +6,7 @@
     gh
   ];
 
-  _nixos.programs.git.enable = true;
-
-  _user.config.home-manager.programs.git = {
+  user.home-manager.programs.git = {
     enable = true;
 
     userName = lib.mkDefault "Justin Henderiks";

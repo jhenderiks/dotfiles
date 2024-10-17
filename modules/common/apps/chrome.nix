@@ -19,7 +19,7 @@ in {
   };
 
   config = lib.mkIf config.chrome.enable {
-    _unfreePackages = [ "google-chrome" ];
+    unfreePackages = [ "google-chrome" ];
 
     environment.systemPackages = [ pkgs.google-chrome ];
 

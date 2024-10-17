@@ -11,8 +11,8 @@
   };
 
   config = lib.mkIf config.spotify.enable {
-    _macos.homebrew.casks = [ "spotify" ];
-    _nixos.environment.systemPackages = [ pkgs.spotify ];
-    _unfreePackages = [ "spotify" ];
+    macos.homebrew.casks = [ "spotify" ];
+    nixos.environment.systemPackages = [ pkgs.spotify ];
+    unfreePackages = [ "spotify" ];
   };
 }

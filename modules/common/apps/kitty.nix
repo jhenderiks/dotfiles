@@ -11,7 +11,7 @@
   };
 
   config = lib.mkIf config.kitty.enable {
-    _user.config.home-manager.programs.kitty.enable = true;
+    user.home-manager.programs.kitty.enable = true;
     environment.systemPackages = [ pkgs.kitty ];
   };
 }

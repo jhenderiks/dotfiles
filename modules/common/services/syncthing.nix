@@ -56,7 +56,7 @@ in {
     # TODO: macos
     # https://github.com/nix-community/home-manager/pull/5616
 
-    _nixos = {
+    nixos = {
       services.syncthing = {
         enable = true;
         user = user;

@@ -9,7 +9,7 @@
   ];
 
   config = {
-    _user.config.home-manager = {
+    user.home-manager = {
       imports = [
         inputs.catppuccin.homeManagerModules.catppuccin
       ];

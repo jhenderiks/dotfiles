@@ -11,7 +11,7 @@
   };
 
   config = lib.mkIf config.brave.enable {
-    _macos.homebrew.casks = [ "brave-browser" ];
-    _nixos.environment.systemPackages = [ pkgs.brave ];
+    macos.homebrew.casks = [ "brave-browser" ];
+    nixos.environment.systemPackages = [ pkgs.brave ];
   };
 }

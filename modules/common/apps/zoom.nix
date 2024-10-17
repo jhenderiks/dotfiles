@@ -11,7 +11,7 @@
   };
 
   config = lib.mkIf config.zoom.enable {
-    _unfreePackages = [ "zoom" ];
+    unfreePackages = [ "zoom" ];
     environment.systemPackages = [ pkgs.zoom-us ];
   };
 }

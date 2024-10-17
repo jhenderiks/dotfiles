@@ -11,8 +11,8 @@
   };
 
   config = lib.mkIf config.bitwarden.enable {
-    _macos.homebrew.casks = [ "bitwarden" ];
-    _nixos.environment.systemPackages = [ pkgs.bitwarden-desktop ];
-    _unfreePackages = [ "bitwarden" ];
+    macos.homebrew.casks = [ "bitwarden" ];
+    nixos.environment.systemPackages = [ pkgs.bitwarden-desktop ];
+    unfreePackages = [ "bitwarden" ];
   };
 }

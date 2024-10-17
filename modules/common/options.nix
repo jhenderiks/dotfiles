@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, options, pkgs, ... }:
 
 let
   mk = type: default: lib.mkOption {
@@ -10,9 +10,9 @@ let
   mkNoDefault = type: lib.mkOption { type = type; };
 
   osCommonOptions = with lib.types; {
-    _user = mk attrs {}; # TODO: need this?
+    # user = mk attrs {}; # TODO: need this?
     environment.systemPackages = mkListOf package [];
-    programs = mkAttrsOf attrs {};
+    # programs = mkAttrsOf attrs {};
     services = mkAttrsOf attrs {};
   };
 
@@ -28,58 +28,51 @@ let
   osConfig = builtins.mapAttrs (
     name: value: lib.mkMerge [
       (if pkgs.stdenv.isDarwin then config._macos.${name} else {})
-      (if pkgs.stdenv.isLinux then config._nixos.${name} else {})
+      (if pkgs.stdenv.isLinux then config.nixos.${name} else {})
     ]
-  ) osCommonOptions;
+  ) (if pkgs.stdenv.isDarwin then options.macos else options.nixos);#osCommonOptions;
 
   reduceUsers = fn: builtins.listToAttrs (
     map (
       user: { name = user; value = fn user; }
-    ) config._user.users
+    ) config.user.names
   );
 in {
   options = with lib.types; {
-    _hostname = mk str null;
+    macos.homebrew.casks = mkListOf str [];
 
-    _macos = osModule {
-      homebrew.casks = mkListOf str [];
-    };
+    nixos.environment.systemPackages = mkListOf package [];
+    nixos.services = mkAttrsOf attrs {};
+    nixos.systemd.services = mkAttrsOf attrs {};
 
-    _nixos = osModule {
-      systemd.services = mkAttrsOf attrs {};
-    };
+    hostname = mk str null;
 
-    _unfreePackages = mkListOf str [];
+    unfreePackages = mkListOf str [];
 
-    _user = {
-      config = {
-        # TODO: make setter functions for these that supply user as a variable?
-        home-manager = mkAttrsOf anything {};
-        users = mkAttrsOf anything {};
-      };
-
+    user = {
       hashedPassword = mk str null;
+      home-manager = mkAttrsOf anything {};
       homeBase = mk str "/home";
+      names = mkListOf str null;
       shell = mk str "fish";
-      users = mkListOf str null;
+      user = mkAttrsOf anything {};
     };
   };
 
   config = lib.mkMerge [
-    osConfig
     {
-      home-manager.users = reduceUsers (user: config._user.config.home-manager);
+      home-manager.users = reduceUsers (user: config.user.home-manager);
 
-      networking.hostName = config._hostname;
+      networking.hostName = config.hostname;
 
-      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
+      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.unfreePackages;
 
       users.users = reduceUsers (
         user: lib.mkMerge [
-          config._user.config.users
+          config.user.user
           {
-            home = "${config._user.homeBase}/${user}";
-            shell = pkgs.${config._user.shell};
+            home = "${config.user.homeBase}/${user}";
+            shell = pkgs.${config.user.shell};
           }
         ]
       );
