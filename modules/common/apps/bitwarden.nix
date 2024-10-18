@@ -14,5 +14,7 @@
     macos.homebrew.casks = [ "bitwarden" ];
     nixos.environment.systemPackages = [ pkgs.bitwarden-desktop ];
     unfreePackages = [ "bitwarden" ];
+
+    chromium.extensions = [ "nngceckbapebfimnlniiiahkandclblb" ];
   };
 }

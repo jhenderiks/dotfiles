@@ -3,6 +3,7 @@
     ./bitwarden.nix
     ./brave.nix
     ./chrome.nix
+    ./chromium.nix
     ./firefox.nix
     ./keepassxc.nix
     ./kitty.nix

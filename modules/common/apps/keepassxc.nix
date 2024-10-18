@@ -12,5 +12,7 @@
 
   config = lib.mkIf config.keepassxc.enable {
     environment.systemPackages = [ pkgs.keepassxc ];
+
+    chromium.extensions = [ "oboonakemofpalcgghocfoadofidjkkk" ];
   };
 }

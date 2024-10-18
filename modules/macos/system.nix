@@ -24,8 +24,8 @@
           showhidden = true;
 
           persistent-apps = [
-            "/Applications/Google Chrome.app"
-            "/Applications/Kitty.app"
+            "/Applications/Nix Apps/Google Chrome.app"
+            "/Applications/Nix Apps/Kitty.app"
           ];
         };
 
@@ -64,6 +64,15 @@
         };
 
         screencapture.location = "~/Downloads";
+
+        # https://github.com/LnL7/nix-darwin/issues/826
+        # "com.apple.speech.recognition.AppleSpeechRecognition.prefs" = {
+        #   CustomizedDictationHotKey = {
+        #     keyChar = 65535;
+        #     modifiers = 0;
+        #     virtualKey = 96;
+        #   };
+        # };
 
         trackpad.Clicking = true;
       };
