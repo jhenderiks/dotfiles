@@ -14,37 +14,16 @@ in {
     ./kde.nix
   ];
 
+  options = with lib; {
+    user.hashedPassword = mkOption {
+      type = types.str;
+      default = null;
+    };
+  };
+
   config = lib.mkMerge [
     nixosConfig
     {
-      user.user = {
-        isNormalUser = true;
-        extraGroups = [ "docker" "wheel" ];
-        hashedPassword = config.user.hashedPassword;
-      };
-
-      user.home-manager = {
-        xdg = {
-          enable = true;
-
-          userDirs = {
-            enable = true;
-            createDirectories = true;
-            desktop = "$HOME/desktop";
-            documents = "$HOME/docs";
-            download = "$HOME/downloads";
-            music = "$HOME/media/music";
-            pictures = "$HOME/media/images";
-            publicShare = "$HOME/public";
-            templates = "$HOME/templates";
-            videos = "$HOME/media/videos";
-            extraConfig = {
-              XDG_DEV_DIR = "$HOME/dev";
-            };
-          };
-        };
-      };
-
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
       catppuccin.enable = true;
@@ -57,6 +36,36 @@ in {
       system.stateVersion = "24.11";
 
       time.timeZone = "America/Toronto"; # https://github.com/NixOS/nixpkgs/issues/68489
+
+      user = {
+        home-manager = {
+          xdg = { # TODO: try this in macos
+            enable = true;
+
+            userDirs = {
+              enable = true;
+              createDirectories = true;
+              desktop = "$HOME/desktop";
+              documents = "$HOME/docs";
+              download = "$HOME/downloads";
+              music = "$HOME/media/music";
+              pictures = "$HOME/media/images";
+              publicShare = "$HOME/public";
+              templates = "$HOME/templates";
+              videos = "$HOME/media/videos";
+              extraConfig = {
+                XDG_DEV_DIR = "$HOME/dev";
+              };
+            };
+          };
+        };
+
+        users = {
+          isNormalUser = true;
+          extraGroups = [ "docker" "wheel" ];
+          hashedPassword = config.user.hashedPassword;
+        };
+      };
 
       users.mutableUsers = false;
     }

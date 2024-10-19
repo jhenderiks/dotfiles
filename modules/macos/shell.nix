@@ -17,7 +17,7 @@ let
             echo "Try again"
           done
         ''
-      ) config.user.names
+      ) config.user.usernames
     )}
   '';
   shellPath = "/run/current-system/sw/bin/${config.user.shell}";

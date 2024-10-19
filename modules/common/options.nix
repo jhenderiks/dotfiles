@@ -11,13 +11,14 @@ let
   reduceUsers = fn: builtins.listToAttrs (
     map (
       user: { name = user; value = fn user; }
-    ) config.user.names
+    ) config.user.usernames
   );
 in {
   options = with lib.types; {
     macos.homebrew.casks = mkListOf str [];
 
     nixos.environment.systemPackages = mkListOf package [];
+    nixos.fonts.fontconfig = mkAttrsOf anything {};
     nixos.services = mkAttrsOf attrs {};
     nixos.systemd.services = mkAttrsOf attrs {};
 
@@ -26,12 +27,11 @@ in {
     unfreePackages = mkListOf str [];
 
     user = {
-      hashedPassword = mk str null;
       home-manager = mkAttrsOf anything {};
       homeBase = mk str "/home";
-      names = mkListOf str null;
       shell = mk str "fish";
-      user = mkAttrsOf anything {};
+      usernames = mkListOf str null;
+      users = mkAttrsOf anything {};
     };
   };
 
@@ -45,7 +45,7 @@ in {
 
       users.users = reduceUsers (
         user: lib.mkMerge [
-          config.user.user
+          config.user.users
           {
             home = "${config.user.homeBase}/${user}";
             shell = pkgs.${config.user.shell};

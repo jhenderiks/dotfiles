@@ -1,14 +1,23 @@
-{ config, inputs, lib, pkgs, ... }:
+{ inputs, ... }:
 
 {
   imports = [
     ./apps
     ./services
     ./shell
+    ./fonts.nix
     ./options.nix
   ];
 
   config = {
+    home-manager = {
+      backupFileExtension = "backup";
+      useGlobalPkgs = true;
+      useUserPackages = true;
+    };
+
+    nix.settings.experimental-features = "nix-command flakes";
+
     user.home-manager = {
       imports = [
         inputs.catppuccin.homeManagerModules.catppuccin
@@ -18,13 +27,5 @@
 
       home.stateVersion = "24.11";
     };
-
-    home-manager = {
-      backupFileExtension = "backup";
-      useGlobalPkgs = true;
-      useUserPackages = true;
-    };
-
-    nix.settings.experimental-features = "nix-command flakes";
   };
 }
