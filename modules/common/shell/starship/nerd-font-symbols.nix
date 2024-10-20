@@ -1,0 +1,65 @@
+{
+  user.home-manager.programs.starship.settings = {
+    os.symbols = {
+      # Alpaquita = " ";
+      # Alpine = " ";
+      # AlmaLinux = " ";
+      # Amazon = " ";
+      # Android = " ";
+      # Arch = " ";
+      # Artix = " ";
+      # CentOS = " ";
+      # Debian = " ";
+      # DragonFly = " ";
+      # Emscripten = " ";
+      # EndeavourOS = " ";
+      # Fedora = " ";
+      # FreeBSD = " ";
+      # Garuda = "󰛓 ";
+      # Gentoo = " ";
+      # HardenedBSD = "󰞌 ";
+      # Illumos = "󰈸 ";
+      # Kali = " ";
+      # Linux = " ";
+      # Mabox = " ";
+      Macos = "󰀵";
+      # Manjaro = " ";
+      # Mariner = " ";
+      # MidnightBSD = " ";
+      # Mint = " ";
+      # NetBSD = " ";
+      NixOS = "󱄅";
+      # OpenBSD = "󰈺 ";
+      # openSUSE = " ";
+      # OracleLinux = "󰌷 ";
+      # Pop = " ";
+      # Raspbian = " ";
+      # Redhat = " ";
+      # RedHatEnterprise = " ";
+      # RockyLinux = " ";
+      # Redox = "󰀘 ";
+      # Solus = "󰠳 ";
+      # SUSE = " ";
+      # Ubuntu = " ";
+      # Unknown = " ";
+      # Void = " ";
+      # Windows = "󰍲 ";
+    };
+
+    aws.symbol = "󰅣";
+    directory.read_only = "󰌾";
+    docker_context.symbol = "󰡨";
+    git_branch.symbol = "󰘬";
+    git_commit.tag_symbol = "󰓼";
+    golang.symbol = "󰟓";
+    hostname.ssh_symbol = "󰇧";
+    kubernetes.symbol = "󱃾";
+    lua.symbol = "󰢱";
+    memory_usage.symbol = "󰍛";
+    nix_shell.symbol = "󱄅";
+    nodejs.symbol = "󰎙";
+    package.symbol = "󰏗";
+    python.symbol = "󰌠";
+    rust.symbol = "󱘗";
+  };
+}

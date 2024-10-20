@@ -1,8 +1,12 @@
+{ pkgs, ... }:
+
 {
   imports = [
+    ./starship
     ./bash.nix
     ./fish.nix
     ./git.nix
-    ./starship.nix
   ];
+
+  environment.systemPackages = [ pkgs.neofetch ];
 }

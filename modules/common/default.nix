@@ -9,23 +9,21 @@
     ./options.nix
   ];
 
-  config = {
-    home-manager = {
-      backupFileExtension = "backup";
-      useGlobalPkgs = true;
-      useUserPackages = true;
-    };
+  home-manager = {
+    backupFileExtension = "backup";
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
 
-    nix.settings.experimental-features = "nix-command flakes";
+  nix.settings.experimental-features = "nix-command flakes";
 
-    user.home-manager = {
-      imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
-      ];
+  user.home-manager = {
+    imports = [
+      inputs.catppuccin.homeManagerModules.catppuccin
+    ];
 
-      catppuccin.enable = true;
+    catppuccin.enable = true;
 
-      home.stateVersion = "24.11";
-    };
+    home.stateVersion = "24.11";
   };
 }
