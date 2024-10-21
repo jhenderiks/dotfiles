@@ -3,8 +3,8 @@
 let
   bg = {
     sys = "mauve";
-    usr = "sapphire";
-    dir = "teal";
+    usr = "blue";
+    dir = "sky";
     git = "peach";
     nsh = "maroon";
     lng = "surface2";
