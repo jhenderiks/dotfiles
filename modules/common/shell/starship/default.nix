@@ -4,9 +4,9 @@ let
   bg = {
     sys = "mauve";
     usr = "sapphire";
-    shl = "teal";
-    dir = "peach";
-    git = "pink";
+    dir = "teal";
+    git = "peach";
+    nsh = "maroon";
     lng = "surface2";
     aws = "surface1";
     k8s = "surface0";
@@ -14,9 +14,9 @@ let
   fg = {
     sys = "base";
     usr = "base";
-    shl = "base";
     dir = "base";
     git = "base";
+    nsh = "base";
     lng = "base";
     aws = "base";
     k8s = "base";
@@ -24,9 +24,9 @@ let
   style = {
     sys = "fg:${fg.sys} bg:${bg.sys}";
     usr = "fg:${fg.usr} bg:${bg.usr}";
-    shl = "fg:${fg.shl} bg:${bg.shl}";
     dir = "fg:${fg.dir} bg:${bg.dir}";
     git = "fg:${fg.git} bg:${bg.git}";
+    nsh = "fg:${fg.nsh} bg:${bg.nsh}";
     lng = "fg:${fg.lng} bg:${bg.lng}";
     aws = "fg:${fg.aws} bg:${bg.aws}";
     k8s = "fg:${fg.k8s} bg:${bg.k8s}";
@@ -53,14 +53,14 @@ in {
         "$hostname"
         "[](fg:${bg.sys} bg:${bg.usr})"
         "[ 󰭕 ](${style.usr})$username" # TODO
-        "[](fg:${bg.usr} bg:${bg.shl})"
-        "[ 󰜗 ](${style.shl})$nix_shell"
-        "[](fg:${bg.shl} bg:${bg.dir})"
+        "[](fg:${bg.usr} bg:${bg.dir})"
         "[ 󰉖 ](${style.dir})$directory"
         "[](fg:${bg.dir} bg:${bg.git})"
         "$git_branch"
         "$git_status"
-        "[](fg:${bg.git} bg:${bg.lng})"
+        "[](fg:${bg.git} bg:${bg.nsh})"
+        "$nix_shell"
+        "[](fg:${bg.nsh} bg:${bg.lng})"
         "$golang"
         "$nodejs"
         # TODO: package
@@ -88,10 +88,6 @@ in {
         style_root = style.usr;
         format = "[$user ]($style)";
       };
-      nix_shell = {
-        style = style.shl;
-        format = "[$name ]($style)";
-      };
       directory = {
         style = style.dir;
         format = "[$path ($read_only )]($style)";
@@ -105,6 +101,10 @@ in {
       git_status = {
         style = style.git;
         format = "[[ ($all_status$ahead_behind )](${style.git})]($style)";
+      };
+      nix_shell = {
+        style = style.nsh;
+        format = "[ $symbol $name ]($style)";
       };
       nodejs = {
         style = style.lng;

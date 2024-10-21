@@ -31,7 +31,7 @@ in {
 
       programs.kitty = {
         font.name = config.font.monospace;
-        font.size = 16;
+        font.size = 16; # TODO: same on linux?
         settings = {
           # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
           macos_traditional_fullscreen = true;
