@@ -3,9 +3,10 @@
 let
   bg = {
     sys = "mauve";
-    usr = "mauve";
-    dir = "sapphire";
-    git = "peach";
+    usr = "sapphire";
+    shl = "teal";
+    dir = "peach";
+    git = "pink";
     lng = "surface2";
     aws = "surface1";
     k8s = "surface0";
@@ -13,6 +14,7 @@ let
   fg = {
     sys = "base";
     usr = "base";
+    shl = "base";
     dir = "base";
     git = "base";
     lng = "base";
@@ -22,6 +24,7 @@ let
   style = {
     sys = "fg:${fg.sys} bg:${bg.sys}";
     usr = "fg:${fg.usr} bg:${bg.usr}";
+    shl = "fg:${fg.shl} bg:${bg.shl}";
     dir = "fg:${fg.dir} bg:${bg.dir}";
     git = "fg:${fg.git} bg:${bg.git}";
     lng = "fg:${fg.lng} bg:${bg.lng}";
@@ -48,8 +51,11 @@ in {
       format = lib.concatStrings [
         "$os"
         "$hostname"
-        # "[ 󰭕 ](${style.usr})$username" # TODO
-        "[](fg:${bg.sys} bg:${bg.dir})"
+        "[](fg:${bg.sys} bg:${bg.usr})"
+        "[ 󰭕 ](${style.usr})$username" # TODO
+        "[](fg:${bg.usr} bg:${bg.shl})"
+        "[ 󰜗 ](${style.shl})$nix_shell"
+        "[](fg:${bg.shl} bg:${bg.dir})"
         "[ 󰉖 ](${style.dir})$directory"
         "[](fg:${bg.dir} bg:${bg.git})"
         "$git_branch"
@@ -80,7 +86,11 @@ in {
         # show_always = true;
         style_user = style.usr;
         style_root = style.usr;
-        format = "[($user )]($style)";
+        format = "[$user ]($style)";
+      };
+      nix_shell = {
+        style = style.shl;
+        format = "[$name ]($style)";
       };
       directory = {
         style = style.dir;

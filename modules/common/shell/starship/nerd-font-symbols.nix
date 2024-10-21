@@ -56,7 +56,7 @@
     kubernetes.symbol = "󱃾";
     lua.symbol = "󰢱";
     memory_usage.symbol = "󰍛";
-    nix_shell.symbol = "󱄅";
+    nix_shell.symbol = "󰜗";
     nodejs.symbol = "󰎙";
     package.symbol = "󰏗";
     python.symbol = "󰌠";
