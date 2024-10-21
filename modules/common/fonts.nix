@@ -7,12 +7,20 @@ let
       monospace = [ config.font.monospace ];
     };
   };
-  packages = with pkgs; [ fira-code ];
+  packages = with pkgs; [
+    fira-code
+    fira-code-nerdfont
+  ];
 in {
   options = with lib; {
     font.monospace = mkOption {
       type = types.str;
       default = "Fira Code";
+    };
+
+    font.monospaceNerdFont = mkOption {
+      type = types.str;
+      default = "FiraCode Nerd Font";
     };
   };
 

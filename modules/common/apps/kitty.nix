@@ -12,6 +12,11 @@
 
   config = lib.mkIf config.kitty.enable {
     environment.systemPackages = [ pkgs.kitty ];
-    user.home-manager.programs.kitty.enable = true;
+
+    user.home-manager.programs.kitty = {
+      enable = true;
+      font.name = config.font.monospace;
+      font.size = 16;
+    };
   };
 }

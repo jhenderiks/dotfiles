@@ -64,6 +64,9 @@ in {
 
         userSettings = {
           # "breadcrumbs.enabled" = true;
+          "editor.fontFamily" = "'${config.font.monospaceNerdFont}'";
+          "editor.fontLigatures" = true;
+          "editor.fontSize" = 16;
           "editor.tabSize" = 2;
           "editor.wordWrap" = "on";
           "files.insertFinalNewline" = true;
