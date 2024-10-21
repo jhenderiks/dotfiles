@@ -101,7 +101,7 @@ in {
         style = style.lng;
         format = "[[ $symbol( $version)](${style.lng})]($style)";
       };
-      golng = {
+      golang = {
         style = style.lng;
         format = "[[ $symbol( $version)](${style.lng})]($style)";
       };
