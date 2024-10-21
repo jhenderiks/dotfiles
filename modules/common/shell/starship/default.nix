@@ -3,6 +3,7 @@
 let
   bg = {
     sys = "mauve";
+    usr = "mauve";
     dir = "sapphire";
     git = "peach";
     lng = "surface2";
@@ -11,6 +12,7 @@ let
   };
   fg = {
     sys = "base";
+    usr = "base";
     dir = "base";
     git = "base";
     lng = "base";
@@ -19,6 +21,7 @@ let
   };
   style = {
     sys = "fg:${fg.sys} bg:${bg.sys}";
+    usr = "fg:${fg.usr} bg:${bg.usr}";
     dir = "fg:${fg.dir} bg:${bg.dir}";
     git = "fg:${fg.git} bg:${bg.git}";
     lng = "fg:${fg.lng} bg:${bg.lng}";
@@ -43,11 +46,11 @@ in {
       # TODO: any other missing things
 
       format = lib.concatStrings [
-        "$hostname"
         "$os"
-        "$username"
+        "$hostname"
+        # "[ 󰭕 ](${style.usr})$username" # TODO
         "[](fg:${bg.sys} bg:${bg.dir})"
-        "$directory"
+        "[ 󰉖 ](${style.dir})$directory"
         "[](fg:${bg.dir} bg:${bg.git})"
         "$git_branch"
         "$git_status"
@@ -63,25 +66,25 @@ in {
         "$line_break"
         "$character"
       ];
-      hostname = {
-        ssh_only = true;
-        format = "[ $ssh_symbol$hostname]($style)";
-        style = style.sys;
-      };
       os = {
         disabled = false;
         format = "[ $symbol ]($style)";
         style = style.sys;
       };
+      hostname = {
+        # ssh_only = false;
+        format = "[$ssh_symbol$hostname ]($style)";
+        style = style.sys;
+      };
       username = {
-        show_always = false;
-        style_user = style.sys;
-        style_root = style.sys;
-        format = "[$user ]($style)";
+        # show_always = true;
+        style_user = style.usr;
+        style_root = style.usr;
+        format = "[($user )]($style)";
       };
       directory = {
         style = style.dir;
-        format = "[ $path( $read_only) ]($style)";
+        format = "[$path ($read_only )]($style)";
         truncation_length = 3;
         truncation_symbol = "…/";
       };
