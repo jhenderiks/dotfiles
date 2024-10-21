@@ -1,13 +1,25 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
-  monospace = "FiraCode Nerd Font";
+  fontconfig = {
+    enable = true;
+    defaultFonts = {
+      monospace = [ config.font.monospace ];
+    };
+  };
+  packages = with pkgs; [ fira-code ];
 in {
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
-  ];
+  options = with lib; {
+    font.monospace = mkOption {
+      type = types.str;
+      default = "Fira Code";
+    };
+  };
 
-  nixos.fonts.fontconfig.defaultFonts.monospace = [ monospace ];
+  config = {
+    fonts.packages = packages;
 
-  user.home-manager.fonts.fontconfig.defaultFonts.monospace = [ monospace ];
+    nixos.fonts.fontconfig = fontconfig;
+    user.home-manager.fonts.fontconfig = fontconfig;
+  };
 }

@@ -29,10 +29,14 @@ in {
     user.home-manager = {
       programs.zsh.enable = true;
 
-      programs.kitty.settings = {
-        # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
-        macos_traditional_fullscreen = true;
-        macos_quit_when_last_window_closed = true;
+      programs.kitty = {
+        font.name = config.font.monospace;
+        font.size = 16;
+        settings = {
+          # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
+          macos_traditional_fullscreen = true;
+          macos_quit_when_last_window_closed = true;
+        };
       };
     };
 
