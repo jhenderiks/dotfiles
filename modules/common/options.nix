@@ -27,6 +27,7 @@ in {
     unfreePackages = mkListOf str [];
 
     user = {
+      github.username = mk str "jhenderiks";
       home-manager = mkAttrsOf anything {};
       homeBase = mk str "/home";
       shell = mk str "fish";

@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -9,8 +9,8 @@
   user.home-manager.programs.git = {
     enable = true;
 
-    userName = lib.mkDefault "Justin Henderiks";
-    userEmail = lib.mkDefault "jhenderiks@users.noreply.github.com";
+    userEmail = "${config.user.github.username}@users.noreply.github.com";
+    userName = "Justin Henderiks";
 
     extraConfig = {
       init.defaultBranch = "main";
