@@ -124,7 +124,7 @@ in {
       };
       aws = {
         style = style.aws;
-        format = "[[ $symbol( $profile)( \($region\))(${style.aws})]($style)";
+        format = "[[ $symbol( $profile)( \($region\))](${style.aws})]($style)";
       };
       kubernetes = {
         disabled = false;

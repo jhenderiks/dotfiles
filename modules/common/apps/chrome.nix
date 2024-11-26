@@ -19,11 +19,8 @@ in {
   };
 
   config = lib.mkIf config.chrome.enable {
-    chromium = {
-      enable = true;
-      package = pkgs.google-chrome;
-    };
-
+    macos.homebrew.casks = [ "google-chrome" ];
+    nixos.environment.systemPackages = [ pkgs.google-chrome ];
     unfreePackages = [ "google-chrome" ];
 
     # system.activationScripts.preUserActivation.text = lib.concatStrings [

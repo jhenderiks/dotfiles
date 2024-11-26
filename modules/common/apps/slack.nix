@@ -11,7 +11,8 @@
   };
 
   config = lib.mkIf config.slack.enable {
-    environment.systemPackages = [ pkgs.slack ];
+    macos.homebrew.casks = [ "slack" ];
+    nixos.environment.systemPackages = [ pkgs.slack ];
     unfreePackages = [ "slack" ];
   };
 }

@@ -56,6 +56,7 @@ in {
             jnoortheen.nix-ide
             ms-azuretools.vscode-docker
             ms-kubernetes-tools.vscode-kubernetes-tools
+            redhat.vscode-yaml
           ])
           (with vscode-marketplace; [
             ms-vscode-remote.remote-ssh
