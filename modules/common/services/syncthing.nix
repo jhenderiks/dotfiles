@@ -62,8 +62,8 @@ in {
         user = user;
         dataDir = home;
         configDir = "${home}/.config/syncthing";
-        overrideDevices = true;
-        overrideFolders = true;
+        # overrideDevices = true;
+        # overrideFolders = true;
         settings = {
           devices = config.syncthing.devices;
           folders = config.syncthing.folders;

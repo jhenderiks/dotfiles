@@ -18,7 +18,7 @@ let
     git = "base";
     nsh = "base";
     lng = "base";
-    aws = "base";
+    aws = "yellow";
     k8s = "base";
   };
   style = {
@@ -108,28 +108,35 @@ in {
       };
       nodejs = {
         style = style.lng;
-        format = "[[ $symbol( $version)](${style.lng})]($style)";
+        format = "[[ $symbol $version ](${style.lng})]($style)";
       };
       rust = {
         style = style.lng;
-        format = "[[ $symbol( $version)](${style.lng})]($style)";
+        format = "[[ $symbol $version ](${style.lng})]($style)";
       };
       golang = {
         style = style.lng;
-        format = "[[ $symbol( $version)](${style.lng})]($style)";
+        format = "[[ $symbol $version ](${style.lng})]($style)";
       };
       python = {
         style = style.lng;
-        format = "[[ $symbol( $version)](${style.lng})]($style)";
+        format = "[[ $symbol $version ](${style.lng})]($style)";
       };
       aws = {
         style = style.aws;
-        format = "[[ $symbol( $profile)( \($region\))](${style.aws})]($style)";
+        format = "[[ $symbol( $profile)( $region) ](${style.aws})]($style)";
+        region_aliases = {
+          ca-central-1 = "ca-qc";
+          us-east-1 = "us-va";
+          us-east-2 = "us-oh";
+          us-west-1 = "us-or";
+          us-west-2 = "us-ca";
+        };
       };
       kubernetes = {
         disabled = false;
         style = style.k8s;
-        format = "[[ $symbol( $context)( \($namespace\))](${style.k8s})]($style)";
+        format = "[[ $symbol $context $namespace ](${style.k8s})]($style)";
       };
       # TODO: vars here
       character = {

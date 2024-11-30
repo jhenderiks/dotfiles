@@ -53,13 +53,12 @@ in {
             catppuccin.catppuccin-vsc
             catppuccin.catppuccin-vsc-icons
             golang.go
+            hashicorp.terraform
+            jeanp413.open-remote-ssh
             jnoortheen.nix-ide
             ms-azuretools.vscode-docker
             ms-kubernetes-tools.vscode-kubernetes-tools
             redhat.vscode-yaml
-          ])
-          (with vscode-marketplace; [
-            ms-vscode-remote.remote-ssh
           ])
         ];
 

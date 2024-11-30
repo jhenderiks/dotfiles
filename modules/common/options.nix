@@ -16,11 +16,13 @@ let
 in {
   options = with lib.types; {
     macos.homebrew.casks = mkListOf str [];
+    macos.user = mkAttrsOf anything {};
 
     nixos.environment.systemPackages = mkListOf package [];
     nixos.fonts.fontconfig = mkAttrsOf anything {};
     nixos.services = mkAttrsOf attrs {};
     nixos.systemd.services = mkAttrsOf attrs {};
+    nixos.user = mkAttrsOf anything {};
 
     hostname = mk str null;
 

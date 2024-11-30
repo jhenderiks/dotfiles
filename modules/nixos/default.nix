@@ -33,6 +33,8 @@ in {
 
       networking.networkmanager.enable = true;
 
+      services.printing.enable = true;
+
       system.stateVersion = "24.11";
 
       time.timeZone = "America/Toronto"; # https://github.com/NixOS/nixpkgs/issues/68489

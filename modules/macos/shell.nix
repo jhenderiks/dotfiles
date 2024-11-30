@@ -26,17 +26,7 @@ in {
     programs.bash.enable = true;
     programs.zsh.enable = true;
 
-    user.home-manager = {
-      programs.zsh.enable = true;
-
-      programs.kitty = {
-        settings = {
-          # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
-          macos_traditional_fullscreen = true;
-          macos_quit_when_last_window_closed = true;
-        };
-      };
-    };
+    user.home-manager.programs.zsh.enable = true;
 
     system.activationScripts.postUserActivation.text = lib.concatStringsSep "\n" [
       "if [ \"$SHELL\" != \"${shellPath}\" ]; then"
