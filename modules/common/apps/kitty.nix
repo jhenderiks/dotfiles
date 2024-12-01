@@ -22,6 +22,8 @@
       };
     };
 
+    nixos.user.home-manager.programs.kitty.font.size = 12;
+
     user.home-manager.programs.kitty = {
       enable = true;
       font.name = config.font.monospace;

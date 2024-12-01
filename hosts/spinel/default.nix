@@ -33,6 +33,7 @@ inputs.nixpkgs.lib.nixosSystem {
       ledger-live.enable = true;
       slack.enable = true;
       spotify.enable = true;
+      steam.enable = true;
       syncthing.enable = true;
       vscode.enable = true;
       zoom.enable = true;

@@ -19,13 +19,13 @@ in {
     {
       # environment.variables = { XDG_CONFIG_HOME = "~/.config"; };
       
-      user.homeBase = lib.mkForce "/Users";
-
       security.pam.enableSudoTouchIdAuth = true;
 
       services.nix-daemon.enable = true;
 
       system.stateVersion = 5;
+
+      user.homeBase = lib.mkForce "/Users";
     }
   ];
 }

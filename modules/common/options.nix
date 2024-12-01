@@ -20,6 +20,7 @@ in {
 
     nixos.environment.systemPackages = mkListOf package [];
     nixos.fonts.fontconfig = mkAttrsOf anything {};
+    nixos.programs = mkAttrsOf attrs {};
     nixos.services = mkAttrsOf attrs {};
     nixos.systemd.services = mkAttrsOf attrs {};
     nixos.user = mkAttrsOf anything {};

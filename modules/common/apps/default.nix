@@ -10,6 +10,7 @@
     ./ledger-live.nix
     ./slack.nix
     ./spotify.nix
+    ./steam.nix
     ./vscode.nix
     ./zoom.nix
   ];
