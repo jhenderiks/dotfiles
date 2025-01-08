@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./nordvpn.nix
     ./syncthing.nix
   ];
 }

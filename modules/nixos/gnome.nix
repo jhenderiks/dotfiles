@@ -36,6 +36,7 @@
         gnome-system-monitor
         gnomeExtensions.gtile
         nautilus
+        remmina
         simple-scan
       ];
     };

@@ -24,18 +24,17 @@ inputs.nixpkgs.lib.nixosSystem {
       hyprland.enable = true;
       # kde.enable = true;
 
-      # bitwarden.enable = true;
+      dev.enable = true;
+
       brave.enable = true;
-      # chrome.enable = true;
       firefox.enable = true;
       keepassxc.enable = true;
-      kitty.enable = true;
       ledger-live.enable = true;
+      nordvpn.enable = true;
       slack.enable = true;
       spotify.enable = true;
       steam.enable = true;
       syncthing.enable = true;
-      vscode.enable = true;
       zoom.enable = true;
     }
   ];

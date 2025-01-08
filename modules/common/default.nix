@@ -3,6 +3,7 @@
 {
   imports = [
     ./apps
+    ./dev
     ./services
     ./shell
     ./fonts.nix

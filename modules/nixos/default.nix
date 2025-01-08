@@ -28,6 +28,11 @@ in {
 
       catppuccin.enable = true;
 
+      # TODO: move
+      # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+      # networking.wireguard.enable = true;
+      environment.systemPackages = [pkgs.moonlight-qt];
+
       hardware.bluetooth.enable = true;
       hardware.bluetooth.powerOnBoot = true;
 
@@ -64,7 +69,7 @@ in {
 
         users = {
           isNormalUser = true;
-          extraGroups = [ "docker" "wheel" ];
+          extraGroups = [ "wheel" ];
           hashedPassword = config.user.hashedPassword;
         };
       };
