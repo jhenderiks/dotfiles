@@ -18,12 +18,12 @@ in {
     macosConfig
     {
       # environment.variables = { XDG_CONFIG_HOME = "~/.config"; };
+
+      home-manager.sharedModules = [
+        inputs.mac-app-util.homeManagerModules.default
+      ];
       
       user.homeBase = lib.mkForce "/Users";
-
-      security.pam.enableSudoTouchIdAuth = true;
-
-      services.nix-daemon.enable = true;
 
       system.stateVersion = 5;
     }

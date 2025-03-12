@@ -9,5 +9,10 @@
     ./git.nix
   ];
 
-  environment.systemPackages = [ pkgs.neofetch ];
+  environment.shellAliases.k = "kubectl";
+
+  environment.systemPackages = [
+    pkgs.neofetch
+    pkgs.nixpkgs-fmt
+  ];
 }

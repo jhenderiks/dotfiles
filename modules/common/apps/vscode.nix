@@ -2,10 +2,7 @@
 
 # TODO: if catppuccin.enable
 
-let
-  open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
-  vscode-marketplace = inputs.nix-vscode-extensions.extensions.${pkgs.system}.vscode-marketplace;
-in {
+{
   options = with lib; {
     vscode = {
       enable = mkOption {
@@ -21,9 +18,33 @@ in {
   };
 
   config = lib.mkIf config.vscode.enable {
-    unfreePackages = [ "visual-studio-code" ];
+    nixpkgs.overlays = [
+      inputs.catppuccin-vsc.overlays.default
+      inputs.nix-vscode-extensions.overlays.default
+    ];
+
+    environment.shellAliases.code =
+      lib.mkIf (config.vscode.package == pkgs.vscodium) "codium";
+
+    environment.systemPackages = [ config.vscode.package pkgs.nixfmt-classic ];
+
+    environment.variables = {
+      VSCODE_GALLERY_SERVICE_URL =
+        "https://marketplace.visualstudio.com/_apis/public/gallery";
+      VSCODE_GALLERY_ITEM_URL = "https://marketplace.visualstudio.com/items";
+      VSCODE_GALLERY_CACHE_URL =
+        "https://vscode.blob.core.windows.net/gallery/index";
+      VSCODE_GALLERY_CONTROL_URL = "";
+    };
+
+    unfreePackages = [
+      "vscode"
+      "vscode-extension-github-copilot"
+      "vscode-extension-ms-vscode-remote-remote-ssh"
+    ];
 
     user.home-manager = {
+      # https://github.com/nix-community/home-manager/issues/6545
       programs.vscode = {
         enable = true;
 
@@ -49,7 +70,7 @@ in {
           #     };
           #   };
           # })]
-          (with open-vsx; [
+          (with pkgs.open-vsx; [
             catppuccin.catppuccin-vsc
             catppuccin.catppuccin-vsc-icons
             golang.go
@@ -58,7 +79,8 @@ in {
             ms-kubernetes-tools.vscode-kubernetes-tools
             redhat.vscode-yaml
           ])
-          (with vscode-marketplace; [
+          (with pkgs.vscode-marketplace; [
+            github.copilot
             ms-vscode-remote.remote-ssh
           ])
         ];
@@ -68,6 +90,7 @@ in {
           "editor.fontFamily" = "'${config.font.monospaceNerdFont}'";
           "editor.fontLigatures" = true;
           "editor.fontSize" = 16;
+          "editor.formatOnSave" = true;
           "editor.tabSize" = 2;
           "editor.wordWrap" = "on";
           "files.insertFinalNewline" = true;
@@ -84,25 +107,9 @@ in {
           "editor.semanticHighlighting.enabled" = true;
           "terminal.integrated.minimumContrastRatio" = 1;
           "window.titleBarStyle" = "custom";
-          "gopls" = {
-            "ui.semanticTokens" = true;
-          };
+          "gopls" = { "ui.semanticTokens" = true; };
         };
       };
     };
-
-
-    environment.shellAliases.code = lib.mkIf (config.vscode.package == pkgs.vscodium) "codium";
-
-    environment.systemPackages = [ config.vscode.package ];
-
-    environment.variables = {
-      VSCODE_GALLERY_SERVICE_URL = "https://marketplace.visualstudio.com/_apis/public/gallery";
-      VSCODE_GALLERY_ITEM_URL = "https://marketplace.visualstudio.com/items";
-      VSCODE_GALLERY_CACHE_URL = "https://vscode.blob.core.windows.net/gallery/index";
-      VSCODE_GALLERY_CONTROL_URL = "";
-    };
-
-    nixpkgs.overlays = [inputs.catppuccin-vsc.overlays.default];
   };
 }

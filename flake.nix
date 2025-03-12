@@ -31,7 +31,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/master";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
   };

@@ -8,7 +8,7 @@ inputs.darwin.lib.darwinSystem {
     ../../modules/common
     ../../modules/macos
     ./.config.nix
-    ({ lib, ... }: {
+    ({ lib, pkgs, ... }: {
       user.github.username = lib.mkDefault null;
 
       bitwarden.enable = true;
@@ -17,6 +17,7 @@ inputs.darwin.lib.darwinSystem {
       slack.enable = true;
       spotify.enable = true;
       vscode.enable = true;
+      vscode.package = pkgs.vscode;
       zoom.enable = true;
     })
   ];

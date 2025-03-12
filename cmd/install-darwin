@@ -13,6 +13,6 @@ if [ ! "$($NIX --version)" ]; then
   https://install.determinate.systems/nix | sh -s -- install
 fi
 
-$NIX run nix-darwin switch --flake "$REPO_ROOT#$HOST"
+$NIX run nix-darwin switch -- --flake "$REPO_ROOT#$HOST"
 
 sudo reboot

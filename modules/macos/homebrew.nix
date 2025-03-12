@@ -17,7 +17,7 @@
     };
 
     system.activationScripts.preUserActivation.text = ''
-      if ! /opt/homebrew/bin/brew -v 2>&1 >/dev/null; then
+      if ! { /opt/homebrew/bin/brew -v > /dev/null; } 2>&1; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       fi
     '';
