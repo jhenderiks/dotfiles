@@ -14,6 +14,7 @@ inputs.darwin.lib.darwinSystem {
       bitwarden.enable = true;
       chrome.enable = true;
       kitty.enable = true;
+      postman.enable = true;
       slack.enable = true;
       spotify.enable = true;
       vscode.enable = true;

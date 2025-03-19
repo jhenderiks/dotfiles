@@ -8,6 +8,7 @@
     ./keepassxc.nix
     ./kitty.nix
     ./ledger-live.nix
+    ./postman.nix
     ./slack.nix
     ./spotify.nix
     ./vscode.nix
