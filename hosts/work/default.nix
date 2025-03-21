@@ -1,4 +1,3 @@
-
 { inputs, ... }:
 
 inputs.darwin.lib.darwinSystem {
@@ -17,6 +16,7 @@ inputs.darwin.lib.darwinSystem {
       postman.enable = true;
       slack.enable = true;
       spotify.enable = true;
+      telegram.enable = true;
       vscode.enable = true;
       vscode.package = pkgs.vscode;
       zoom.enable = true;

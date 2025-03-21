@@ -11,6 +11,7 @@
     ./postman.nix
     ./slack.nix
     ./spotify.nix
+    ./telegram.nix
     ./vscode.nix
     ./zoom.nix
   ];
