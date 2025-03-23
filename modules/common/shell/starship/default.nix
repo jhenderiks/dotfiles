@@ -80,7 +80,7 @@ in {
         };
         hostname = {
           # ssh_only = false;
-          format = "[$ssh_symbol$hostname ]($style)";
+          format = "[$hostname ]($style)";
           style = style.sys;
         };
         username = {

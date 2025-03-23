@@ -36,6 +36,8 @@ in {
       hardware.bluetooth.enable = true;
       hardware.bluetooth.powerOnBoot = true;
 
+      hardware.enableRedistributableFirmware = lib.mkDefault true;
+
       networking.networkmanager.enable = true;
 
       services.printing.enable = true;

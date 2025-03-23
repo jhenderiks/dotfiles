@@ -26,11 +26,21 @@ inputs.nixpkgs.lib.nixosSystem {
 
       dev.enable = true;
 
+      # TODO: nextdns
+
+      # TODO: handle tailscale (and sudo) impermanence
+
+      # TODO: move this
+      services.tailscale = {
+        enable = true;
+        openFirewall = true;
+      };
+
       brave.enable = true;
       firefox.enable = true;
       keepassxc.enable = true;
       ledger-live.enable = true;
-      nordvpn.enable = true;
+      nordvpn.enable = true; # TODO: switch to mullvad
       slack.enable = true;
       spotify.enable = true;
       steam.enable = true;

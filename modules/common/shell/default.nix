@@ -9,5 +9,8 @@
     ./git.nix
   ];
 
-  environment.systemPackages = [ pkgs.neofetch ];
+  environment.systemPackages = [
+    pkgs.neofetch
+    pkgs.pciutils
+  ];
 }

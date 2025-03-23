@@ -1,0 +1,43 @@
+#!/bin/sh
+
+CMD=$1
+
+if [ ! "$CMD" ]; then
+  fail "No command provided"
+fi
+
+if [ "$CMD" != "install" ] && [ "$CMD" != "rebuild" ]; then
+  fail "Command is not one of: install, rebuild"
+fi
+
+if [ "$CMD" = "install" ]; then
+  HOST=$2
+  IP_ADDRESS=$3
+
+  HOST_DIR="$REPO_ROOT/hosts/$HOST"
+
+  _CMD="nixos-anywhere --flake .#$HOST --generate-hardware-config nixos-generate-config $HOST_DIR/hardware.nix --target-host root@$IP_ADDRESS"
+  _CLEANUP="ssh-keygen -R $IP_ADDRESS"
+fi
+
+if [ "$CMD" = "rebuild" ]; then
+  ACTION=$2
+  HOST=$3
+  IP_ADDRESS=$4
+
+  if [ ! "$ACTION" ]; then
+    fail "No action provided"
+  fi
+
+  _CMD="nixos-rebuild $ACTION --flake .#$HOST --target-host root@$IP_ADDRESS"
+fi
+
+if [ ! "$HOST" ]; then
+  fail "No host provided"
+fi
+
+if [ ! "$IP_ADDRESS" ]; then
+  fail "No target IP address provided"
+fi
+
+$_CMD && $_CLEANUP

@@ -14,7 +14,7 @@
     macos.homebrew.casks = [ "ledger-live" ];
 
     nixos = {
-      # environment.systemPackages = [ pkgs.ledger-live-desktop ]; # TODO: need this?
+      environment.systemPackages = [ pkgs.ledger-live-desktop ];
 
       hardware.ledger.enable = true;
     };

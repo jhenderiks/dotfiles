@@ -1,6 +1,8 @@
 { config, lib, ... }:
 
-{
+let
+  content = import ./${config.disk.main.format}.nix;
+in {
   config = lib.mkIf config.disk.main.enable {
     disko.devices.disk.main = {
       type = "disk";
