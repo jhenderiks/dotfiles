@@ -105,6 +105,6 @@ in {
       VSCODE_GALLERY_CONTROL_URL = "";
     };
 
-    nixpkgs.overlays = [inputs.catppuccin-vsc.overlays.default];
+    # nixpkgs.overlays = [inputs.catppuccin-vsc.overlays.default];
   };
 }

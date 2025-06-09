@@ -10,6 +10,7 @@
     ./slack.nix
     ./spotify.nix
     ./steam.nix
+    ./telegram.nix
     ./zoom.nix
   ];
 }

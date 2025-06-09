@@ -45,6 +45,7 @@ inputs.nixpkgs.lib.nixosSystem {
       spotify.enable = true;
       steam.enable = true;
       syncthing.enable = true;
+      telegram.enable = true;
       zoom.enable = true;
     }
   ];
