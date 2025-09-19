@@ -11,6 +11,8 @@ inputs.nixpkgs.lib.nixosSystem {
     ./.passwd.nix # TODO: get rid of this
     ./hardware.nix
     {
+      system.stateVersion = "24.11";
+
       hostname = "spinel";
 
       boot.loader.systemd-boot.enable = true;
@@ -40,7 +42,7 @@ inputs.nixpkgs.lib.nixosSystem {
       firefox.enable = true;
       keepassxc.enable = true;
       ledger-live.enable = true;
-      nordvpn.enable = true; # TODO: switch to mullvad
+      # nordvpn.enable = true; # TODO: switch to surfshark
       slack.enable = true;
       spotify.enable = true;
       steam.enable = true;

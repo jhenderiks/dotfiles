@@ -42,9 +42,10 @@ in {
 
       services.printing.enable = true;
 
-      system.stateVersion = "24.11";
-
-      time.timeZone = "America/Toronto"; # https://github.com/NixOS/nixpkgs/issues/68489
+      # https://github.com/NixOS/nixpkgs/issues/68489
+      services.automatic-timezoned.enable = true;
+      services.geoclue2.enableDemoAgent = lib.mkForce true;
+      services.geoclue2.geoProviderUrl = "https://beacondb.net/v1/geolocate";
 
       user = {
         home-manager = {

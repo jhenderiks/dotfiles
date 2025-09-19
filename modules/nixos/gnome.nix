@@ -42,13 +42,13 @@
     };
 
     services = {
-      gnome.core-utilities.enable = false;
+      desktopManager.gnome.enable = true;
+      displayManager.gdm.enable = true;
+
+      gnome.core-apps.enable = false;
     
       xserver = {
         enable = true;
-        displayManager.gdm.enable = true;
-        desktopManager.gnome.enable = true;
-
         excludePackages = [ pkgs.xterm ];
       };
     };

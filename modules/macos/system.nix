@@ -3,8 +3,6 @@
 {
   config = {
     system = {
-      stateVersion = 5;
-
       defaults = {
         CustomUserPreferences = {
           "com.apple.desktopservices" = {

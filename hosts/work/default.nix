@@ -9,6 +9,8 @@ inputs.darwin.lib.darwinSystem {
     ../../modules/macos
     ./.config.nix
     ({ lib, ... }: {
+      system.stateVersion = 5;
+
       user.github.username = lib.mkDefault null;
 
       bitwarden.enable = true;

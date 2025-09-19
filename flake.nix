@@ -22,7 +22,7 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
+    # jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
@@ -36,7 +36,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     # nixpkgs.url = "github:nixos/nixpkgs/master";
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
   };
 
   outputs = inputs: let
@@ -49,8 +49,8 @@
     };
     
     nixosConfigurations = {
-      aether = import ./hosts/aether args;
-      phoenix = import ./hosts/phoenix args;
+      # aether = import ./hosts/aether args;
+      # phoenix = import ./hosts/phoenix args;
       spinel = import ./hosts/spinel args;
     };
   };

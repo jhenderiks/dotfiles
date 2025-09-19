@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 
 {
   imports = [
@@ -20,11 +20,11 @@
 
   user.home-manager = {
     imports = [
-      inputs.catppuccin.homeManagerModules.catppuccin
+      inputs.catppuccin.homeModules.catppuccin
     ];
 
     catppuccin.enable = true;
 
-    home.stateVersion = "24.11";
+    home.stateVersion = config.system.stateVersion;
   };
 }
