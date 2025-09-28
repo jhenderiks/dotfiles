@@ -2,6 +2,6 @@
   ESP = import ./boot.nix;
   root = {
     size = "100%";
-    content = import ./content.nix;
+    content = import ./content/zfs.nix;
   };
 }

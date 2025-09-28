@@ -1,0 +1,4 @@
+{
+  type = "zfs";
+  pool = "zroot";
+};
