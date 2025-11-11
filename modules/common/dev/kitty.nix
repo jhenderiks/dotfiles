@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -13,20 +18,26 @@
   config = lib.mkIf config.kitty.enable {
     environment.systemPackages = [ pkgs.kitty ];
 
-    macos.user.home-manager.programs.kitty = {
-      font.size = 16;
-      settings = {
-        # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
-        macos_traditional_fullscreen = true;
-        macos_quit_when_last_window_closed = true;
-      };
-    };
+    macos.home-manager.sharedModules = [
+      {
+        programs.kitty = {
+          font.size = 16;
+          settings = {
+            # TODO: can do this by setting programs.kitty.darwinLaunchOptions?
+            macos_traditional_fullscreen = true;
+            macos_quit_when_last_window_closed = true;
+          };
+        };
+      }
+    ];
 
-    nixos.user.home-manager.programs.kitty.font.size = 12;
-
-    user.home-manager.programs.kitty = {
-      enable = true;
-      font.name = config.font.monospace;
-    };
+    home-manager.sharedModules = [
+      {
+        programs.kitty = {
+          enable = true;
+          font.name = lib.mkForce config.font.monospace;
+        };
+      }
+    ];
   };
 }

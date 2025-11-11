@@ -1,11 +1,16 @@
-{ config, inputs, lib, pkgs, ... }:
-
-# TODO: if catppuccin.enable
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
   vscode-marketplace = inputs.nix-vscode-extensions.extensions.${pkgs.system}.vscode-marketplace;
-in {
+in
+{
   options = with lib; {
     vscode = {
       enable = mkOption {
@@ -21,93 +26,74 @@ in {
   };
 
   config = lib.mkIf config.vscode.enable {
-    macos.user.home-manager.programs.vscode.userSettings."editor.fontSize" = 16;
-
-    nixos.user.home-manager.programs.vscode.userSettings."editor.fontSize" = 14;
-
     unfreePackages = [ "visual-studio-code" ];
 
-    user.home-manager = {
-      programs.vscode = {
-        enable = true;
+    home-manager.sharedModules = [
+      {
+        programs.vscode = {
+          enable = true;
 
-        package = config.vscode.package;
+          package = config.vscode.package;
 
-        mutableExtensionsDir = false;
+          mutableExtensionsDir = false;
 
-        profiles.default = {
-          enableUpdateCheck = true;
-          enableExtensionUpdateCheck = true;
+          profiles.default = {
+            enableUpdateCheck = true;
+            enableExtensionUpdateCheck = true;
 
-          extensions = builtins.concatLists [
-            # [(pkgs.catppuccin-vsc.override {
-            #   colorOverrides = {
-            #     mocha = {
-            #       # # 1 step down
-            #       # base = "#1c1c2b";
-            #       # mantle = "#161622";
-            #       # crust = "#101019";
+            extensions = builtins.concatLists [
+              (with open-vsx; [
+                golang.go
+                hashicorp.terraform
+                jeanp413.open-remote-ssh
+                jnoortheen.nix-ide
+                ms-azuretools.vscode-docker
+                ms-kubernetes-tools.vscode-kubernetes-tools
+                redhat.vscode-yaml
+              ])
+            ];
 
-            #       # # 2 steps down
-            #       # base = "#1a1a28";
-            #       # mantle = "#14141f";
-            #       # crust = "#0e0e16";
-            #     };
-            #   };
-            # })]
-            (with open-vsx; [
-              catppuccin.catppuccin-vsc
-              catppuccin.catppuccin-vsc-icons
-              golang.go
-              hashicorp.terraform
-              jeanp413.open-remote-ssh
-              jnoortheen.nix-ide
-              ms-azuretools.vscode-docker
-              ms-kubernetes-tools.vscode-kubernetes-tools
-              redhat.vscode-yaml
-            ])
-          ];
+            userSettings = {
+              # "breadcrumbs.enabled" = true;
 
-          userSettings = {
-            # "breadcrumbs.enabled" = true;
-            "editor.fontFamily" = "'${config.font.monospaceNerdFont}'";
-            "editor.fontLigatures" = true;
-            "editor.tabSize" = 2;
-            "editor.wordWrap" = "on";
-            "files.insertFinalNewline" = true;
-            # "explorer.confirmDelete" = false;
-            "security.workspace.trust.banner" = "never";
-            "security.workspace.trust.enabled" = false;
-            "security.workspace.trust.startupPrompt" = "never";
-            "security.workspace.trust.untrustedFiles" = "open";
-            "telemetry.telemetryLevel" = "off";
-            "workbench.colorTheme" = "Catppuccin Mocha";
-            "workbench.iconTheme" = "catppuccin-mocha";
+              "editor.fontFamily" = lib.mkForce config.font.monospaceNerdFont;
+              "editor.fontSize" = lib.mkForce 14;
+              "editor.fontLigatures" = true;
+              "editor.formatOnSave" = true;
+              "editor.tabSize" = 2;
+              "editor.wordWrap" = "on";
 
-            # recommended catppuccin settings
-            "editor.semanticHighlighting.enabled" = true;
-            "terminal.integrated.minimumContrastRatio" = 1;
-            "window.titleBarStyle" = "custom";
-            "gopls" = {
-              "ui.semanticTokens" = true;
+              # "explorer.confirmDelete" = false;
+
+              "files.insertFinalNewline" = true;
+
+              "security.workspace.trust.banner" = "never";
+              "security.workspace.trust.enabled" = false;
+              "security.workspace.trust.startupPrompt" = "never";
+              "security.workspace.trust.untrustedFiles" = "open";
+
+              "terminal.integrated.fontFamily" = config.font.monospaceNerdFont;
+
+              "update.mode" = "none";
             };
           };
         };
+      }
+    ];
+
+    environment = lib.mkIf (config.vscode.package == pkgs.vscodium) {
+      shellAliases = {
+        code = "codium";
+      };
+
+      systemPackages = [ config.vscode.package ];
+
+      variables = {
+        VSCODE_GALLERY_SERVICE_URL = "https://marketplace.visualstudio.com/_apis/public/gallery";
+        VSCODE_GALLERY_ITEM_URL = "https://marketplace.visualstudio.com/items";
+        VSCODE_GALLERY_CACHE_URL = "https://vscode.blob.core.windows.net/gallery/index";
+        VSCODE_GALLERY_CONTROL_URL = "";
       };
     };
-
-
-    environment.shellAliases.code = lib.mkIf (config.vscode.package == pkgs.vscodium) "codium";
-
-    environment.systemPackages = [ config.vscode.package ];
-
-    environment.variables = {
-      VSCODE_GALLERY_SERVICE_URL = "https://marketplace.visualstudio.com/_apis/public/gallery";
-      VSCODE_GALLERY_ITEM_URL = "https://marketplace.visualstudio.com/items";
-      VSCODE_GALLERY_CACHE_URL = "https://vscode.blob.core.windows.net/gallery/index";
-      VSCODE_GALLERY_CONTROL_URL = "";
-    };
-
-    # nixpkgs.overlays = [inputs.catppuccin-vsc.overlays.default];
   };
 }

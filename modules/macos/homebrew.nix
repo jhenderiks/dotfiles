@@ -1,8 +1,13 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   config = {
-    user.home-manager.home.sessionPath = [ "/opt/homebrew/bin" ];
+    home-manager.sharedModules = [ { home.sessionPath = [ "/opt/homebrew/bin" ]; } ];
 
     homebrew = {
       enable = true;

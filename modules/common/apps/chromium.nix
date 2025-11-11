@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   macExtDir = "/Library/Application\\ Support/Google/chromium/External\\ Extensions";
@@ -8,7 +13,8 @@ let
       \"update_url\": \"https://clients2.google.com/service/update2/crx\"
     }
   '';
-in {
+in
+{
   options = with lib; {
     chromium = {
       enable = mkOption {
@@ -23,7 +29,7 @@ in {
 
       extensions = mkOption {
         type = types.listOf types.str;
-        default = [];
+        default = [ ];
       };
     };
   };
@@ -35,11 +41,15 @@ in {
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" # dark reader
     ];
 
-    user.home-manager.programs.chromium = {
-      enable = true;
-      package = config.chromium.package;
-      extensions = config.chromium.extensions;
-    };
+    home-manager.sharedModules = [
+      {
+        programs.chromium = {
+          enable = true;
+          package = config.chromium.package;
+          extensions = config.chromium.extensions;
+        };
+      }
+    ];
 
     # system.activationScripts.preUserActivation.text = lib.concatStrings [
     #   ''

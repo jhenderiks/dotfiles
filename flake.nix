@@ -1,10 +1,5 @@
-
 {
   inputs = {
-    catppuccin.url = "github:catppuccin/nix";
-
-    catppuccin-vsc.url = "github:catppuccin/vscode";
-
     darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,21 +32,29 @@
     # nixpkgs.url = "github:nixos/nixpkgs/master";
 
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs: let
-    args = {
-      inherit inputs;
+  outputs =
+    inputs:
+    let
+      args = {
+        inherit inputs;
+      };
+    in
+    {
+      darwinConfigurations = {
+        work = import ./hosts/work args;
+      };
+
+      nixosConfigurations = {
+        # aether = import ./hosts/aether args;
+        # phoenix = import ./hosts/phoenix args;
+        spinel = import ./hosts/spinel args;
+      };
     };
-  in {
-    darwinConfigurations = {
-      work = import ./hosts/work args;
-    };
-    
-    nixosConfigurations = {
-      # aether = import ./hosts/aether args;
-      # phoenix = import ./hosts/phoenix args;
-      spinel = import ./hosts/spinel args;
-    };
-  };
 }

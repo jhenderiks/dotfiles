@@ -5,6 +5,7 @@ inputs.nixpkgs.lib.nixosSystem {
   specialArgs = { inherit inputs; };
   modules = [
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
+    inputs.stylix.nixosModules.stylix
     ../../modules/common
     ../../modules/nixos
     ./.config.nix # TODO: get rid of this

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -11,10 +16,12 @@
   };
 
   config = lib.mkIf config.hyprland.enable {
-    # user.home-manager = {
-    #   home.sessionVariables.NIXOS_OZONE_WL = "1";
-    #   wayland.windowManager.hyprland.enable = true;
-    # };
+    # home-manager.sharedModules = [
+    #   {
+    #     home.sessionVariables.NIXOS_OZONE_WL = "1";
+    #     wayland.windowManager.hyprland.enable = true;
+    #   }
+    # ];
 
     programs.hyprland.enable = true;
   };

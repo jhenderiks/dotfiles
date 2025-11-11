@@ -6,7 +6,7 @@
     ./dev
     ./services
     ./shell
-    ./fonts.nix
+    ./theme.nix
     ./options.nix
   ];
 
@@ -18,13 +18,9 @@
 
   nix.settings.experimental-features = "nix-command flakes";
 
-  user.home-manager = {
-    imports = [
-      inputs.catppuccin.homeModules.catppuccin
-    ];
-
-    catppuccin.enable = true;
-
-    home.stateVersion = config.system.stateVersion;
-  };
+  home-manager.sharedModules = [
+    {
+      home.stateVersion = config.system.stateVersion;
+    }
+  ];
 }

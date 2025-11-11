@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -11,13 +16,17 @@
   };
 
   config = lib.mkIf config.gnome.enable {
-    user.home-manager.dconf = {
-      enable = true;
-      settings = {
-        "org/gnome/desktop/interface".color-scheme = "prefer-dark";
-        "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
-      };
-    };
+    home-manager.sharedModules = [
+      {
+        dconf = {
+          enable = true;
+          settings = {
+            "org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-dark";
+            "org/gnome/mutter".experimental-features = [ "scale-monitor-framebuffer" ];
+          };
+        };
+      }
+    ];
 
     environment = {
       gnome.excludePackages = with pkgs; [
@@ -46,7 +55,7 @@
       displayManager.gdm.enable = true;
 
       gnome.core-apps.enable = false;
-    
+
       xserver = {
         enable = true;
         excludePackages = [ pkgs.xterm ];

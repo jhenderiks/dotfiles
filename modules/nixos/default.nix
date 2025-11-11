@@ -1,12 +1,17 @@
-{ config, inputs, lib, options, pkgs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  options,
+  pkgs,
+  ...
+}:
 
 let
-  nixosConfig = builtins.mapAttrs (
-    name: value: config.nixos.${name}
-  ) options.nixos;
-in {
+  nixosConfig = builtins.mapAttrs (name: value: config.nixos.${name}) options.nixos;
+in
+{
   imports = [
-    inputs.catppuccin.nixosModules.catppuccin
     inputs.home-manager.nixosModules.home-manager
     ./disk
     ./gnome.nix
@@ -26,30 +31,20 @@ in {
     {
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
-      catppuccin.enable = true;
-
       # TODO: move
       # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
       # networking.wireguard.enable = true;
-      environment.systemPackages = [pkgs.moonlight-qt];
+      environment.systemPackages = [ pkgs.moonlight-qt ];
 
       hardware.bluetooth.enable = true;
       hardware.bluetooth.powerOnBoot = true;
 
       hardware.enableRedistributableFirmware = lib.mkDefault true;
 
-      networking.networkmanager.enable = true;
-
-      services.printing.enable = true;
-
-      # https://github.com/NixOS/nixpkgs/issues/68489
-      services.automatic-timezoned.enable = true;
-      services.geoclue2.enableDemoAgent = lib.mkForce true;
-      services.geoclue2.geoProviderUrl = "https://beacondb.net/v1/geolocate";
-
-      user = {
-        home-manager = {
-          xdg = { # TODO: try this in macos
+      home-manager.sharedModules = [
+        {
+          xdg = {
+            # TODO: try this in macos
             enable = true;
 
             userDirs = {
@@ -68,8 +63,19 @@ in {
               };
             };
           };
-        };
+        }
+      ];
 
+      networking.networkmanager.enable = true;
+
+      services.printing.enable = true;
+
+      # https://github.com/NixOS/nixpkgs/issues/68489
+      services.automatic-timezoned.enable = true;
+      services.geoclue2.enableDemoAgent = lib.mkForce true;
+      services.geoclue2.geoProviderUrl = "https://beacondb.net/v1/geolocate";
+
+      user = {
         users = {
           isNormalUser = true;
           extraGroups = [ "wheel" ];

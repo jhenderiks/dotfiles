@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   environment.systemPackages = with pkgs; [
@@ -6,16 +11,22 @@
     gh
   ];
 
-  user.home-manager.programs.git = {
-    enable = true;
+  home-manager.sharedModules = [
+    {
+      programs.git = {
+        enable = true;
 
-    userEmail = "${config.user.github.username}@users.noreply.github.com";
-    userName = "Justin Henderiks";
+        settings = {
+          init.defaultBranch = "main";
+          push.autoSetupRemote = "true";
+          rebase.autosquash = "true";
 
-    extraConfig = {
-      init.defaultBranch = "main";
-      push.autoSetupRemote = "true";
-      rebase.autosquash = "true";
-    };
-  };
+          user = {
+            email = "${config.user.github.username}@users.noreply.github.com";
+            name = "Justin Henderiks";
+          };
+        };
+      };
+    }
+  ];
 }

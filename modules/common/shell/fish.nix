@@ -3,5 +3,5 @@
 {
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
-  user.home-manager.programs.fish.enable = true;
+  home-manager.sharedModules = [ { programs.fish.enable = true; } ];
 }

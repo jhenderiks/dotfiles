@@ -1,11 +1,11 @@
-{ config, inputs, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
-# TODO: if catppuccin.enable
-
-let
-  open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
-  vscode-marketplace = inputs.nix-vscode-extensions.extensions.${pkgs.system}.vscode-marketplace;
-in {
+{
   options = with lib; {
     cursor = {
       enable = mkOption {
@@ -16,7 +16,8 @@ in {
   };
 
   config = lib.mkIf config.cursor.enable {
-    config.vscode.enable = true;
-    config.vscode.package = pkgs.code-cursor;
+    unfreePackages = [ "cursor" ];
+    vscode.enable = true;
+    vscode.package = pkgs.code-cursor;
   };
 }

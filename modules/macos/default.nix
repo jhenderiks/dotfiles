@@ -1,10 +1,16 @@
-{ config, inputs, lib, options, pkgs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  options,
+  pkgs,
+  ...
+}:
 
 let
-  macosConfig = builtins.mapAttrs (
-    name: value: config.macos.${name}
-  ) options.macos;
-in {
+  macosConfig = builtins.mapAttrs (name: value: config.macos.${name}) options.macos;
+in
+{
   imports = [
     inputs.home-manager.darwinModules.home-manager
     inputs.mac-app-util.darwinModules.default
@@ -18,12 +24,10 @@ in {
     macosConfig
     {
       # environment.variables = { XDG_CONFIG_HOME = "~/.config"; };
-      
+
       security.pam.enableSudoTouchIdAuth = true;
 
       services.nix-daemon.enable = true;
-
-      system.stateVersion = 5;
 
       user.homeBase = lib.mkForce "/Users";
     }

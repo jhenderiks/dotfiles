@@ -11,102 +11,109 @@ inputs.nixpkgs.lib.nixosSystem {
     ./.config.nix # TODO: get rid of this
     ./.passwd.nix # TODO: get rid of this
     ./hardware.nix
-    ({ config, lib, pkgs, ...}: {
-      hostname = "aether";
+    (
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
+      {
+        hostname = "aether";
 
-      boot.loader.systemd-boot.enable = true;
+        boot.loader.systemd-boot.enable = true;
 
-      disk.vm.enable = true;
-      disk.vm.device = "/dev/vda";
-      # TODO: impermanence for VMs?
+        disk.vm.enable = true;
+        disk.vm.device = "/dev/vda";
+        # TODO: impermanence for VMs?
 
-      # TODO: bookmarked guide to make streaming great
+        # TODO: bookmarked guide to make streaming great
 
-      services.openssh.enable = true;
-      services.qemuGuest.enable = true;
+        services.openssh.enable = true;
+        services.qemuGuest.enable = true;
 
-      # TODO: deploy remotely as non-root user?
+        # TODO: deploy remotely as non-root user?
 
-      fileSystems."/mnt/games" = {
-        device = "games";
-        fsType = "virtiofs";
-      };
-
-      # gemstreming shit
-
-      # gnome.enable = true;
-      kde.enable = true;
-
-      hardware.graphics = {
-        enable = true;
-        enable32Bit = true;
-      };
-
-      environment.systemPackages = with pkgs; [
-        kitty
-        konsole
-        ungoogled-chromium
-        # lutris
-      ];
-
-      # jovian.steam = {
-      #   enable = true;
-      #   autoStart = true;
-      #   # desktopSession = "gnome";
-      #   desktopSession = "gamescope-wayland";
-      #   user = builtins.head config.user.usernames;
-      # };
-
-      programs.steam = {
-        enable = true;
-        remotePlay.openFirewall = true;
-      };
-
-      # services.pulseaudio.enable = true;
-
-
-      services = {
-        displayManager.autoLogin = {
-          enable = true;
-          user = builtins.head config.user.usernames;
+        fileSystems."/mnt/games" = {
+          device = "games";
+          fsType = "virtiofs";
         };
 
-        sunshine = {
+        # gemstreming shit
+
+        # gnome.enable = true;
+        kde.enable = true;
+
+        hardware.graphics = {
           enable = true;
-          autoStart = true;
-          capSysAdmin = true;
-          openFirewall = true;
+          enable32Bit = true;
         };
 
-        tailscale = {
+        environment.systemPackages = with pkgs; [
+          kitty
+          konsole
+          ungoogled-chromium
+          # lutris
+        ];
+
+        # jovian.steam = {
+        #   enable = true;
+        #   autoStart = true;
+        #   # desktopSession = "gnome";
+        #   desktopSession = "gamescope-wayland";
+        #   user = builtins.head config.user.usernames;
+        # };
+
+        programs.steam = {
           enable = true;
-          openFirewall = true;
+          remotePlay.openFirewall = true;
         };
 
-        # udev.extraRules = ''
-        #   ACTION=="add", SUBSYSTEM=="drm", TAG+="systemd"
-        # '';
+        # services.pulseaudio.enable = true;
 
-        # xserver.videoDrivers = [ "amdgpu" ];
-      };
+        services = {
+          displayManager.autoLogin = {
+            enable = true;
+            user = builtins.head config.user.usernames;
+          };
 
-      # systemd.user.services.sunshine = {
-      #   # requires = [ "dev-dri-renderD128.device" ];
-      #   # aliases = [ "display-manager.service" ];
-      #   wantedBy = lib.mkIf config.services.sunshine.autoStart [ "gamescope-session.service" "gamescope.service" ];
-      #   partOf = [ "gamescope-session.service" "gamescope.service" ];
-      #   wants = [ "gamescope-session.service" "gamescope.service" ];
-      #   after = [ "gamescope-session.service" "gamescope.service" ];
-      # };
+          sunshine = {
+            enable = true;
+            autoStart = true;
+            capSysAdmin = true;
+            openFirewall = true;
+          };
 
-      unfreePackages = [
-        "steam"
-        # "steam-jupiter-unwrapped"
-        "steam-original"
-        "steam-run"
-        "steam-unwrapped"
-        # "steamdeck-hw-theme"
-      ];
-    })
+          tailscale = {
+            enable = true;
+            openFirewall = true;
+          };
+
+          # udev.extraRules = ''
+          #   ACTION=="add", SUBSYSTEM=="drm", TAG+="systemd"
+          # '';
+
+          # xserver.videoDrivers = [ "amdgpu" ];
+        };
+
+        # systemd.user.services.sunshine = {
+        #   # requires = [ "dev-dri-renderD128.device" ];
+        #   # aliases = [ "display-manager.service" ];
+        #   wantedBy = lib.mkIf config.services.sunshine.autoStart [ "gamescope-session.service" "gamescope.service" ];
+        #   partOf = [ "gamescope-session.service" "gamescope.service" ];
+        #   wants = [ "gamescope-session.service" "gamescope.service" ];
+        #   after = [ "gamescope-session.service" "gamescope.service" ];
+        # };
+
+        unfreePackages = [
+          "steam"
+          # "steam-jupiter-unwrapped"
+          "steam-original"
+          "steam-run"
+          "steam-unwrapped"
+          # "steamdeck-hw-theme"
+        ];
+      }
+    )
   ];
 }

@@ -24,6 +24,7 @@
     # vscode.enable = true;
 
     environment.systemPackages = with pkgs; [
+      nixfmt
       nixos-anywhere
     ];
   };

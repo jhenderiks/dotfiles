@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   fontconfig = {
@@ -11,7 +16,8 @@ let
     fira-code
     nerd-fonts.fira-code
   ];
-in {
+in
+{
   options = with lib; {
     font.monospace = mkOption {
       type = types.str;
@@ -27,7 +33,21 @@ in {
   config = {
     fonts.packages = packages;
 
+    home-manager.sharedModules = [ { fonts.fontconfig = fontconfig; } ];
+
     nixos.fonts.fontconfig = fontconfig;
-    user.home-manager.fonts.fontconfig = fontconfig;
+
+    stylix = {
+      enable = true;
+
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
+
+      fonts = {
+        monospace = {
+          name = config.font.monospace;
+          # package = pkgs.nerd-fonts.fira-code;
+        };
+      };
+    };
   };
 }

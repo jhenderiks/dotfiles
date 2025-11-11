@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  user.home-manager.programs.bash.enable = true;
+  home-manager.sharedModules = [ { programs.bash.enable = true; } ];
 }
