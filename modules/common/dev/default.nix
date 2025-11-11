@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./cursor.nix
     ./docker.nix
     ./kitty.nix
     ./vscode.nix
@@ -17,9 +18,10 @@
   };
 
   config = lib.mkIf config.dev.enable {
+    cursor.enable = true;
     docker.enable = true; # TODO: use nixos containers instead?
     kitty.enable = true;
-    vscode.enable = true;
+    # vscode.enable = true;
 
     environment.systemPackages = with pkgs; [
       nixos-anywhere
