@@ -40,7 +40,12 @@ in
     stylix = {
       enable = true;
 
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/framer.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/classic-dark.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/ayu-dark.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/embers.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyodark.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
 
       fonts = {
         monospace = {
@@ -48,6 +53,8 @@ in
           # package = pkgs.nerd-fonts.fira-code;
         };
       };
+
+      image = config.lib.stylix.pixel "base02";
     };
   };
 }

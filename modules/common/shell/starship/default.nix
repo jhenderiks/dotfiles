@@ -1,25 +1,30 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   bg = {
-    sys = "mauve";
-    usr = "blue";
-    dir = "sky";
-    git = "peach";
-    nsh = "maroon";
-    lng = "surface2";
-    aws = "surface1";
-    k8s = "surface0";
+    sys = "#${config.lib.stylix.colors.base0E}";
+    usr = "#${config.lib.stylix.colors.base0D}";
+    dir = "#${config.lib.stylix.colors.base0C}";
+    git = "#${config.lib.stylix.colors.base0B}";
+    nsh = "#${config.lib.stylix.colors.base09}";
+    lng = "#${config.lib.stylix.colors.base08}";
+    aws = "#${config.lib.stylix.colors.base03}";
+    k8s = "#${config.lib.stylix.colors.base02}";
   };
   fg = {
-    sys = "base";
-    usr = "base";
-    dir = "base";
-    git = "base";
-    nsh = "base";
-    lng = "base";
-    aws = "yellow";
-    k8s = "base";
+    sys = "#${config.lib.stylix.colors.base01}";
+    usr = "#${config.lib.stylix.colors.base01}";
+    dir = "#${config.lib.stylix.colors.base01}";
+    git = "#${config.lib.stylix.colors.base01}";
+    nsh = "#${config.lib.stylix.colors.base01}";
+    lng = "#${config.lib.stylix.colors.base01}";
+    aws = "#${config.lib.stylix.colors.base0A}";
+    k8s = "#${config.lib.stylix.colors.base0D}";
   };
   style = {
     sys = "fg:${fg.sys} bg:${bg.sys}";

@@ -43,10 +43,11 @@ inputs.nixpkgs.lib.nixosSystem {
       firefox.enable = true;
       keepassxc.enable = true;
       ledger-live.enable = true;
-      # nordvpn.enable = true; # TODO: switch to surfshark
+      # nordvpn.enable = true; # TODO: switch to surfshark / proton
       slack.enable = true;
       spotify.enable = true;
       steam.enable = true;
+      sunshine.enable = true;
       syncthing.enable = true;
       telegram.enable = true;
       zoom.enable = true;
