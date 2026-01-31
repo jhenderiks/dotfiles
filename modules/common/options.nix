@@ -20,6 +20,7 @@ in
   options = with lib.types; {
     macos.home-manager = mkAttrsOf anything { };
     macos.homebrew.casks = mkListOf str [ ];
+    macos.launchd = mkAttrsOf attrs { };
     macos.user = mkAttrsOf anything { };
 
     nixos.environment.systemPackages = mkListOf package [ ];
@@ -28,6 +29,7 @@ in
     nixos.programs = mkAttrsOf attrs { };
     nixos.services = mkAttrsOf attrs { };
     nixos.systemd.services = mkAttrsOf attrs { };
+    nixos.systemd.user = mkAttrsOf attrs { };
     nixos.user = mkAttrsOf anything { };
     nixos.users = mkAttrsOf anything { };
 

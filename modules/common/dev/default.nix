@@ -10,6 +10,7 @@
     ./cursor.nix
     ./docker.nix
     ./kitty.nix
+    ./opencode
     ./vscode.nix
   ];
 
@@ -26,9 +27,11 @@
     cursor.enable = true;
     docker.enable = true;
     kitty.enable = true;
+    opencode.enable = true;
     # vscode.enable = true;
 
     environment.systemPackages = with pkgs; [
+      jq
       nixfmt
       nixos-anywhere
     ];
