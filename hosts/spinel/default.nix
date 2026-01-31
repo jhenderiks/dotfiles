@@ -4,6 +4,7 @@ inputs.nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = { inherit inputs; };
   modules = [
+    inputs.eden.nixosModules.default
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
     inputs.stylix.nixosModules.stylix
     ../../modules/common
@@ -34,6 +35,12 @@ inputs.nixpkgs.lib.nixosSystem {
       # TODO: handle tailscale (and sudo) impermanence
 
       # TODO: move this
+      programs.eden = {
+        # enable = true;
+        # enableCache = true;
+      };
+
+      # TODO: move this
       services.tailscale = {
         enable = true;
         openFirewall = true;
@@ -47,7 +54,7 @@ inputs.nixpkgs.lib.nixosSystem {
       slack.enable = true;
       spotify.enable = true;
       steam.enable = true;
-      sunshine.enable = true;
+      # sunshine.enable = true;
       syncthing.enable = true;
       telegram.enable = true;
       zoom.enable = true;

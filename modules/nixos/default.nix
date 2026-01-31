@@ -31,6 +31,8 @@ in
     {
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
+      boot.loader.systemd-boot.configurationLimit = 16;
+
       # TODO: move
       # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
       # networking.wireguard.enable = true;

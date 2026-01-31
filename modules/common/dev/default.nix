@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -19,7 +24,7 @@
 
   config = lib.mkIf config.dev.enable {
     cursor.enable = true;
-    docker.enable = true; # TODO: use nixos containers instead?
+    docker.enable = true;
     kitty.enable = true;
     # vscode.enable = true;
 
@@ -27,5 +32,14 @@
       nixfmt
       nixos-anywhere
     ];
+
+    programs.nix-ld = {
+      enable = true;
+
+      libraries = with pkgs; [
+        # Add any missing dynamic libraries for unpackaged programs
+        # here, NOT in environment.systemPackages
+      ];
+    };
   };
 }
