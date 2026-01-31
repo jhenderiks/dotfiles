@@ -17,7 +17,7 @@
 
       mkdir -p "$MNT"
       mount ${config.fileSystems."/".device} "$MNT"
-      
+
       delete_subvolume_recursively "$SUBVOL_PATH"
 
       btrfs subvolume create "$SUBVOL_PATH"
@@ -28,6 +28,7 @@
       directories = [
         "/etc/NetworkManager/system-connections"
         "/etc/nixos"
+        "/etc/ssh"
         "/var/log"
         "/var/lib/bluetooth"
         "/var/lib/nixos"

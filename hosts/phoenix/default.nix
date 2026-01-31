@@ -22,7 +22,6 @@ inputs.nixpkgs.lib.nixosSystem {
         disk.vm.enable = true;
         disk.vm.device = "/dev/vda";
 
-        services.openssh.enable = true;
         services.qemuGuest.enable = true;
 
         # TODO: deploy remotely as non-root user?

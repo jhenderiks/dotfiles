@@ -15,15 +15,6 @@ let
     };
   mkAttrsOf = type: mk (lib.types.attrsOf type);
   mkListOf = type: mk (lib.types.listOf type);
-
-  reduceUsers =
-    fn:
-    builtins.listToAttrs (
-      map (user: {
-        name = user;
-        value = fn user;
-      }) config.user.usernames
-    );
 in
 {
   options = with lib.types; {
@@ -47,31 +38,27 @@ in
     user = {
       github.username = mk str "jhenderiks";
       homeBase = mk str "/home";
+      name = mk str "justin";
       shell = mk str "fish";
-      usernames = mkListOf str null;
       users = mkAttrsOf anything { };
     };
   };
 
   config = lib.mkMerge [
     {
-      # needs this so it knows where to put sharedModules, apparently
-      home-manager.users = reduceUsers (user: { });
+      home-manager.users.${config.user.name} = { };
 
       networking.hostName = config.hostname;
 
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.unfreePackages;
 
-      users.users = reduceUsers (
-        user:
-        lib.mkMerge [
-          config.user.users
-          {
-            home = "${config.user.homeBase}/${user}";
-            shell = pkgs.${config.user.shell};
-          }
-        ]
-      );
+      users.users.${config.user.name} = lib.mkMerge [
+        config.user.users
+        {
+          home = "${config.user.homeBase}/${config.user.name}";
+          shell = pkgs.${config.user.shell};
+        }
+      ];
     }
   ];
 }

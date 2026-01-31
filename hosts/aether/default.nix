@@ -29,7 +29,6 @@ inputs.nixpkgs.lib.nixosSystem {
 
         # TODO: bookmarked guide to make streaming great
 
-        services.openssh.enable = true;
         services.qemuGuest.enable = true;
 
         # TODO: deploy remotely as non-root user?
@@ -61,7 +60,7 @@ inputs.nixpkgs.lib.nixosSystem {
         #   autoStart = true;
         #   # desktopSession = "gnome";
         #   desktopSession = "gamescope-wayland";
-        #   user = builtins.head config.user.usernames;
+        #   user = config.user.name;
         # };
 
         programs.steam = {
@@ -74,7 +73,7 @@ inputs.nixpkgs.lib.nixosSystem {
         services = {
           displayManager.autoLogin = {
             enable = true;
-            user = builtins.head config.user.usernames;
+            user = config.user.name;
           };
 
           sunshine = {

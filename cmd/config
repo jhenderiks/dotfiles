@@ -28,8 +28,6 @@ inputs.<INPUT>.lib.<OS>System { # TODO
     # ../../modules/macos # TODO
     # ../../modules/nixos # TODO
     ./.config.nix
-    # ./.passwd.nix # TODO
-    # ./hardware.nix # TODO
     {
       # TODO
     }
@@ -37,10 +35,3 @@ inputs.<INPUT>.lib.<OS>System { # TODO
 }
 EOF
 fi
-
-if [ ! -f "$DOTCONFIG_FILE" ]; then
-  echo "{}" > $DOTCONFIG_FILE
-fi
-
-git add --intent-to-add $DOTCONFIG_FILE
-git update-index --assume-unchanged $DOTCONFIG_FILE

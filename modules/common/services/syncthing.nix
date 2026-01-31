@@ -1,17 +1,16 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 let
-  user = config.syncthing.user;
+  user = config.user.name;
   home = config.users.users.${user}.home;
-in {
+in
+{
   options = with lib; {
     syncthing = {
       enable = mkOption {
         type = types.bool;
         default = false;
       };
-
-      user = mkOption { type = types.str; };
 
       devices = mkOption {
         type = types.attrsOf (
@@ -22,7 +21,7 @@ in {
           }
         );
 
-        default = {};
+        default = { };
       };
 
       folders = mkOption {
@@ -35,7 +34,7 @@ in {
           }
         );
 
-        default = {};
+        default = { };
       };
 
       # folders = mkOption {
@@ -59,7 +58,7 @@ in {
     nixos = {
       services.syncthing = {
         enable = true;
-        user = user;
+        inherit user;
         dataDir = home;
         configDir = "${home}/.config/syncthing";
         # overrideDevices = true;

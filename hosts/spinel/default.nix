@@ -4,60 +4,62 @@ inputs.nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = { inherit inputs; };
   modules = [
+    inputs.agenix.nixosModules.default
     inputs.eden.nixosModules.default
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
     inputs.stylix.nixosModules.stylix
     ../../modules/common
     ../../modules/nixos
-    ./.config.nix # TODO: get rid of this
-    ./.passwd.nix # TODO: get rid of this
     ./hardware.nix
-    {
-      system.stateVersion = "24.11";
+    (
+      { config, ... }:
+      {
+        system.stateVersion = "24.11";
 
-      hostname = "spinel";
+        hostname = "spinel";
 
-      boot.loader.systemd-boot.enable = true;
+        boot.loader.systemd-boot.enable = true;
 
-      disk.main.enable = true;
-      disk.main.device = "/dev/nvme0n1";
-      disk.main.encrypted = true;
-      disk.main.impermanence.enable = true;
+        disk.main.enable = true;
+        disk.main.device = "/dev/nvme0n1";
+        disk.main.encrypted = true;
+        disk.main.impermanence.enable = true;
 
-      gnome.enable = true;
-      hyprland.enable = true;
-      # kde.enable = true;
+        gnome.enable = true;
+        hyprland.enable = true;
+        # kde.enable = true;
 
-      dev.enable = true;
+        dev.enable = true;
 
-      # TODO: nextdns
+        # TODO: nextdns
 
-      # TODO: handle tailscale (and sudo) impermanence
+        # TODO: handle tailscale (and sudo) impermanence
 
-      # TODO: move this
-      programs.eden = {
-        # enable = true;
-        # enableCache = true;
-      };
+        # TODO: move this
+        programs.eden = {
+          # enable = true;
+          # enableCache = true;
+        };
 
-      # TODO: move this
-      services.tailscale = {
-        enable = true;
-        openFirewall = true;
-      };
+        # TODO: move this
+        services.tailscale = {
+          enable = true;
+          openFirewall = true;
+        };
 
-      brave.enable = true;
-      firefox.enable = true;
-      keepassxc.enable = true;
-      ledger-live.enable = true;
-      # nordvpn.enable = true; # TODO: switch to surfshark / proton
-      slack.enable = true;
-      spotify.enable = true;
-      steam.enable = true;
-      # sunshine.enable = true;
-      syncthing.enable = true;
-      telegram.enable = true;
-      zoom.enable = true;
-    }
+        brave.enable = true;
+        firefox.enable = true;
+        keepassxc.enable = true;
+        ledger-live.enable = true;
+        # nordvpn.enable = true; # TODO: switch to surfshark / proton
+        slack.enable = true;
+        spotify.enable = true;
+        steam.enable = true;
+        # sunshine.enable = true;
+        syncthing.enable = true;
+        telegram.enable = true;
+        zoom.enable = true;
+      }
+    )
   ];
 }

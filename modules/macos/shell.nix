@@ -7,23 +7,20 @@
 
 let
   chshFile = "/tmp/chsh.sh";
+  user = config.user.name;
+  shellPath = "/run/current-system/sw/bin/${config.user.shell}";
   chshScript = ''
     #!/bin/sh
     max_retry=3
     counter=0
     rm ${chshFile}
-    ${
-      (lib.concatMapStrings (user: ''
-        until sudo -u ${user} chsh -s ${shellPath} ${user}
-        do
-          ((counter++))
-          [[ counter -eq \$max_retry ]] && echo "Failed" && exit 1
-          echo "Try again"
-        done
-      '') config.user.usernames)
-    }
+    until sudo -u ${user} chsh -s ${shellPath} ${user}
+    do
+      ((counter++))
+      [[ counter -eq \$max_retry ]] && echo "Failed" && exit 1
+      echo "Try again"
+    done
   '';
-  shellPath = "/run/current-system/sw/bin/${config.user.shell}";
 in
 {
   config = {

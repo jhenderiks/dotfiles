@@ -3,76 +3,86 @@
   lib,
   pkgs,
   ...
-}: let
-  nordvpnPkg = pkgs.callPackage ({
-    autoPatchelfHook,
-    buildFHSEnvChroot,
-    dpkg,
-    fetchurl,
-    lib,
-    stdenv,
-    sysctl,
-    iptables,
-    iproute2,
-    procps,
-    cacert,
-    libxml2,
-    libidn2,
-    zlib,
-    wireguard-tools,
-  }: let
-    pname = "nordvpn";
-    version = "3.18.3";
+}:
+let
+  nordvpnPkg = pkgs.callPackage (
+    {
+      autoPatchelfHook,
+      buildFHSEnvChroot,
+      dpkg,
+      fetchurl,
+      lib,
+      stdenv,
+      sysctl,
+      iptables,
+      iproute2,
+      procps,
+      cacert,
+      libxml2,
+      libidn2,
+      zlib,
+      wireguard-tools,
+    }:
+    let
+      pname = "nordvpn";
+      version = "3.18.3";
 
-    nordvpnBase = stdenv.mkDerivation {
-      inherit pname version;
+      nordvpnBase = stdenv.mkDerivation {
+        inherit pname version;
 
-      src = fetchurl {
-        url = "https://repo.nordvpn.com/deb/nordvpn/debian/pool/main/n/nordvpn/nordvpn_${version}_amd64.deb";
-        hash = "sha256-pCveN8cEwEXdvWj2FAatzg89fTLV9eYehEZfKq5JdaY=";
+        src = fetchurl {
+          url = "https://repo.nordvpn.com/deb/nordvpn/debian/pool/main/n/nordvpn/nordvpn_${version}_amd64.deb";
+          hash = "sha256-pCveN8cEwEXdvWj2FAatzg89fTLV9eYehEZfKq5JdaY=";
+        };
+
+        buildInputs = [
+          libxml2
+          libidn2
+        ];
+        nativeBuildInputs = [
+          dpkg
+          autoPatchelfHook
+          stdenv.cc.cc.lib
+        ];
+
+        dontConfigure = true;
+        dontBuild = true;
+
+        unpackPhase = ''
+          runHook preUnpack
+          dpkg --extract $src .
+          runHook postUnpack
+        '';
+
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out
+          mv usr/* $out/
+          mv var/ $out/
+          mv etc/ $out/
+          runHook postInstall
+        '';
       };
 
-      buildInputs = [libxml2 libidn2];
-      nativeBuildInputs = [dpkg autoPatchelfHook stdenv.cc.cc.lib];
+      nordvpnfhs = buildFHSEnvChroot {
+        name = "nordvpnd";
+        runScript = "nordvpnd";
 
-      dontConfigure = true;
-      dontBuild = true;
-
-      unpackPhase = ''
-        runHook preUnpack
-        dpkg --extract $src .
-        runHook postUnpack
-      '';
-
-      installPhase = ''
-        runHook preInstall
-        mkdir -p $out
-        mv usr/* $out/
-        mv var/ $out/
-        mv etc/ $out/
-        runHook postInstall
-      '';
-    };
-
-    nordvpnfhs = buildFHSEnvChroot {
-      name = "nordvpnd";
-      runScript = "nordvpnd";
-
-      # hardcoded path to /sbin/ip
-      targetPkgs = pkgs: [
-        nordvpnBase
-        sysctl
-        iptables
-        iproute2
-        procps
-        cacert
-        libxml2
-        libidn2
-        zlib
-        wireguard-tools
-      ];
-    };
-  in
+        # hardcoded path to /sbin/ip
+        targetPkgs = pkgs: [
+          nordvpnBase
+          sysctl
+          iptables
+          iproute2
+          procps
+          cacert
+          libxml2
+          libidn2
+          zlib
+          wireguard-tools
+        ];
+      };
+    in
     stdenv.mkDerivation {
       inherit pname version;
 
@@ -94,50 +104,52 @@
         description = "CLI client for NordVPN";
         homepage = "https://www.nordvpn.com";
         license = licenses.unfreeRedistributable;
-        maintainers = with maintainers; [dr460nf1r3];
-        platforms = ["x86_64-linux"];
+        maintainers = with maintainers; [ dr460nf1r3 ];
+        platforms = [ "x86_64-linux" ];
       };
-    }) {};
+    }
+  ) { };
 in
-  with lib; {
-    options.nordvpn.enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+with lib;
+{
+  options.nordvpn.enable = mkOption {
+    type = types.bool;
+    default = false;
+  };
 
-    config = mkIf config.nordvpn.enable {
-      networking.firewall.checkReversePath = false;
+  config = mkIf config.nordvpn.enable {
+    networking.firewall.checkReversePath = false;
 
-      environment.systemPackages = [nordvpnPkg];
+    environment.systemPackages = [ nordvpnPkg ];
 
-      nixos.users.groups.nordvpn = {};
-      nixos.users.groups.nordvpn.members = config.user.usernames;
+    nixos.users.groups.nordvpn = { };
+    nixos.users.groups.nordvpn.members = [ config.user.name ];
 
-      systemd = {
-        services.nordvpn = {
-          description = "NordVPN daemon.";
-          serviceConfig = {
-            ExecStart = "${nordvpnPkg}/bin/nordvpnd";
-            ExecStartPre = pkgs.writeShellScript "nordvpn-start" ''
-              mkdir -m 700 -p /var/lib/nordvpn;
-              if [ -z "$(ls -A /var/lib/nordvpn)" ]; then
-                cp -r ${nordvpnPkg}/var/lib/nordvpn/* /var/lib/nordvpn;
-              fi
-            '';
-            NonBlocking = true;
-            KillMode = "process";
-            Restart = "on-failure";
-            RestartSec = 5;
-            RuntimeDirectory = "nordvpn";
-            RuntimeDirectoryMode = "0750";
-            Group = "nordvpn";
-          };
-          wantedBy = ["multi-user.target"];
-          after = ["network-online.target"];
-          wants = ["network-online.target"];
+    systemd = {
+      services.nordvpn = {
+        description = "NordVPN daemon.";
+        serviceConfig = {
+          ExecStart = "${nordvpnPkg}/bin/nordvpnd";
+          ExecStartPre = pkgs.writeShellScript "nordvpn-start" ''
+            mkdir -m 700 -p /var/lib/nordvpn;
+            if [ -z "$(ls -A /var/lib/nordvpn)" ]; then
+              cp -r ${nordvpnPkg}/var/lib/nordvpn/* /var/lib/nordvpn;
+            fi
+          '';
+          NonBlocking = true;
+          KillMode = "process";
+          Restart = "on-failure";
+          RestartSec = 5;
+          RuntimeDirectory = "nordvpn";
+          RuntimeDirectoryMode = "0750";
+          Group = "nordvpn";
         };
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
       };
-
-      unfreePackages = ["nordvpn"];
     };
-  }
+
+    unfreePackages = [ "nordvpn" ];
+  };
+}

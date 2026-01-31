@@ -8,6 +8,11 @@
 }:
 
 let
+  identityPath =
+    if config.disk.main.impermanence.enable then
+      "${config.disk.main.impermanence.dir}/etc/ssh/ssh_host_ed25519_key"
+    else
+      "/etc/ssh/ssh_host_ed25519_key";
   nixosConfig = builtins.mapAttrs (name: value: config.nixos.${name}) options.nixos;
 in
 {
@@ -20,8 +25,8 @@ in
   ];
 
   options = with lib; {
-    user.hashedPassword = mkOption {
-      type = types.str;
+    user.hashedPasswordFile = mkOption {
+      type = types.nullOr types.path;
       default = null;
     };
   };
@@ -29,13 +34,13 @@ in
   config = lib.mkMerge [
     nixosConfig
     {
+      age.identityPaths = [ identityPath ];
+      age.secrets.hashedPassword.file = ../../hosts/${config.hostname}/password.age;
+
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
       boot.loader.systemd-boot.configurationLimit = 16;
 
-      # TODO: move
-      # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-      # networking.wireguard.enable = true;
       environment.systemPackages = [ pkgs.moonlight-qt ];
 
       hardware.bluetooth.enable = true;
@@ -70,6 +75,7 @@ in
 
       networking.networkmanager.enable = true;
 
+      services.openssh.enable = true;
       services.printing.enable = true;
 
       # https://github.com/NixOS/nixpkgs/issues/68489
@@ -81,7 +87,7 @@ in
         users = {
           isNormalUser = true;
           extraGroups = [ "wheel" ];
-          hashedPassword = config.user.hashedPassword;
+          hashedPasswordFile = config.age.secrets.hashedPassword.path;
         };
       };
 
