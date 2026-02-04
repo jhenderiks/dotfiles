@@ -12,7 +12,7 @@ inputs.nixpkgs.lib.nixosSystem {
     ../../modules/nixos
     ./hardware.nix
     (
-      { config, ... }:
+      { config, pkgs, ... }:
       {
         system.stateVersion = "24.11";
 
@@ -31,21 +31,25 @@ inputs.nixpkgs.lib.nixosSystem {
 
         dev.enable = true;
 
-        # TODO: nextdns
-
-        # TODO: handle tailscale (and sudo) impermanence
-
-        # TODO: move this
         programs.eden = {
           # enable = true;
           # enableCache = true;
         };
 
-        # TODO: move this
+        # TODO: handle tailscale (and sudo) impermanence
         services.tailscale = {
           enable = true;
           openFirewall = true;
         };
+
+        displaylink.enable = true;
+
+        hardware.logitech.wireless = {
+          enable = true;
+          enableGraphical = true;
+        };
+
+        # TODO: nextdns
 
         brave.enable = true;
         firefox.enable = true;
