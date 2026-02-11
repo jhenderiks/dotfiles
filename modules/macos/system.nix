@@ -5,6 +5,8 @@
     system = {
       stateVersion = 5;
 
+      primaryUser = "justin";
+
       defaults = {
         CustomUserPreferences = {
           "com.apple.desktopservices" = {
@@ -32,7 +34,7 @@
         finder = {
           AppleShowAllExtensions = true;
           AppleShowAllFiles = true;
-          
+
           CreateDesktop = false;
 
           FXDefaultSearchScope = "SCcf";
@@ -83,39 +85,37 @@
         "/usr/bin/hidutil"
         "property"
         "--match"
-        "{\"ProductID\":0xc8,\"VendorID\":0x258a,\"Product\":\"RK Bluetooth Keyboard\"}"
+        ''
+          {"ProductID":0xc8,"VendorID":0x258a,"Product":"RK Bluetooth Keyboard"}''
         "--set"
-        (
-          let
-            # https://hidutil-generator.netlify.app
-            leftCommand = "0x7000000E3";
-            leftOption = "0x7000000E2";
-            rightCommand = "0x7000000E7";
-            rightOption = "0x7000000E6";
-          in
-          ''
-            {
-              "UserKeyMapping": [
-                {
-                  "HIDKeyboardModifierMappingDst": ${leftCommand},
-                  "HIDKeyboardModifierMappingSrc": ${leftOption}
-                },
-                {
-                  "HIDKeyboardModifierMappingDst": ${leftOption},
-                  "HIDKeyboardModifierMappingSrc": ${leftCommand}
-                },
-                {
-                  "HIDKeyboardModifierMappingDst": ${rightCommand},
-                  "HIDKeyboardModifierMappingSrc": ${rightOption}
-                },
-                {
-                  "HIDKeyboardModifierMappingDst": ${rightOption},
-                  "HIDKeyboardModifierMappingSrc": ${rightCommand}
-                }
-              ]
-            }
-          ''
-        )
+        (let
+          # https://hidutil-generator.netlify.app
+          leftCommand = "0x7000000E3";
+          leftOption = "0x7000000E2";
+          rightCommand = "0x7000000E7";
+          rightOption = "0x7000000E6";
+        in ''
+          {
+            "UserKeyMapping": [
+              {
+                "HIDKeyboardModifierMappingDst": ${leftCommand},
+                "HIDKeyboardModifierMappingSrc": ${leftOption}
+              },
+              {
+                "HIDKeyboardModifierMappingDst": ${leftOption},
+                "HIDKeyboardModifierMappingSrc": ${leftCommand}
+              },
+              {
+                "HIDKeyboardModifierMappingDst": ${rightCommand},
+                "HIDKeyboardModifierMappingSrc": ${rightOption}
+              },
+              {
+                "HIDKeyboardModifierMappingDst": ${rightOption},
+                "HIDKeyboardModifierMappingSrc": ${rightCommand}
+              }
+            ]
+          }
+        '')
       ];
       LaunchEvents = {
         "com.apple.iokit.matching" = {

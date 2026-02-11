@@ -10,10 +10,15 @@
     };
   };
 
-  config = lib.mkIf config.spotify.enable {
-    # macos.homebrew.casks = [ "spotify" ];
-    # nixos.environment.systemPackages = [ pkgs.spotify ];
-    environment.systemPackages = [ pkgs.spotify ];
-    unfreePackages = [ "spotify" ];
-  };
+  config = lib.mkIf config.spotify.enable (
+    lib.mkMerge [
+      (lib.mkIf pkgs.stdenv.isDarwin {
+        macos.homebrew.casks = [ "spotify" ];
+      })
+      (lib.mkIf pkgs.stdenv.isLinux {
+        environment.systemPackages = [ pkgs.spotify ];
+        unfreePackages = [ "spotify" ];
+      })
+    ]
+  );
 }

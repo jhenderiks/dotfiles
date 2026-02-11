@@ -9,10 +9,9 @@
   user.home-manager.programs.git = {
     enable = true;
 
-    userEmail = "${config.user.github.username}@users.noreply.github.com";
-    userName = "Justin Henderiks";
-
-    extraConfig = {
+    settings = {
+      user.email = "${config.user.github.username}@users.noreply.github.com";
+      user.name = "Justin Henderiks";
       init.defaultBranch = "main";
       push.autoSetupRemote = "true";
       rebase.autosquash = "true";

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 
 {
   config = {
@@ -16,9 +16,13 @@
       casks = config.macos.homebrew.casks;
     };
 
-    system.activationScripts.preUserActivation.text = ''
+    system.activationScripts.preActivation.text = ''
       if ! { /opt/homebrew/bin/brew -v > /dev/null; } 2>&1; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        ${lib.concatMapStrings (user: ''
+          if ! { /opt/homebrew/bin/brew -v > /dev/null; } 2>&1; then
+            sudo -u ${user} env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+        '') config.user.usernames}
       fi
     '';
   };
