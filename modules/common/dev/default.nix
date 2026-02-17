@@ -25,6 +25,7 @@
 
   config = lib.mkIf config.dev.enable {
     cursor.enable = true;
+    discord.enable = true;
     docker.enable = true;
     kitty.enable = true;
     opencode.enable = true;
