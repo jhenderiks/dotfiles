@@ -28,6 +28,7 @@
     discord.enable = true;
     docker.enable = true;
     kitty.enable = true;
+    mattermost.enable = true;
     opencode.enable = true;
     # vscode.enable = true;
 

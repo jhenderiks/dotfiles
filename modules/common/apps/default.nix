@@ -8,6 +8,7 @@
     ./firefox.nix
     ./keepassxc.nix
     ./ledger-live.nix
+    ./mattermost.nix
     ./slack.nix
     ./spotify.nix
     ./steam.nix
