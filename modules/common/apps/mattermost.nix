@@ -17,6 +17,6 @@
 
   config = lib.mkIf config.mattermost.enable {
     macos.homebrew.casks = [ "mattermost" ];
-    nixos.environment.systemPackages = [ pkgs.mattermost ];
+    nixos.environment.systemPackages = [ pkgs.mattermost-desktop ];
   };
 }

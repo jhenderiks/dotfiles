@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -11,9 +16,13 @@
   };
 
   config = lib.mkIf config.steam.enable {
-    environment.systemPackages = with pkgs; [ lutris ]; # TODO: move
+    # environment.systemPackages = with pkgs; [ lutris ]; # TODO: broken # TODO: move
     macos.homebrew.casks = [ "steam" ];
     nixos.programs.steam.enable = true;
-    unfreePackages = [ "steam" "steam-original" "steam-unwrapped" ];
+    unfreePackages = [
+      "steam"
+      "steam-original"
+      "steam-unwrapped"
+    ];
   };
 }

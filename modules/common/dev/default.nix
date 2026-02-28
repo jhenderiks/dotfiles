@@ -36,6 +36,7 @@
       jq
       nixfmt
       nixos-anywhere
+      zed-editor-fhs
     ];
 
     programs.nix-ld = {
