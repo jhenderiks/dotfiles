@@ -86,7 +86,7 @@ in
       user = {
         users = {
           isNormalUser = true;
-          extraGroups = [ "wheel" ];
+          extraGroups = [ "docker" "wheel" ];
           hashedPasswordFile = config.age.secrets.hashedPassword.path;
         };
       };

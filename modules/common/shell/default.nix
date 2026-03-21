@@ -10,7 +10,7 @@
   ];
 
   environment.systemPackages = [
-    pkgs.neofetch
+    pkgs.fastfetch
     pkgs.pciutils
   ];
 }
