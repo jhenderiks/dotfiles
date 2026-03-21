@@ -9,6 +9,7 @@
   imports = [
     ./cursor.nix
     ./docker.nix
+    ./ghostty.nix
     ./kitty.nix
     ./opencode
     ./vscode.nix
@@ -27,6 +28,7 @@
     cursor.enable = true;
     discord.enable = true;
     docker.enable = true;
+    ghostty.enable = true;
     kitty.enable = true;
     mattermost.enable = true;
     opencode.enable = true;
