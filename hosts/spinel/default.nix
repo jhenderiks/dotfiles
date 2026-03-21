@@ -7,6 +7,7 @@ inputs.nixpkgs.lib.nixosSystem {
     inputs.agenix.nixosModules.default
     inputs.eden.nixosModules.default
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
+    inputs.niri.nixosModules.niri
     inputs.stylix.nixosModules.stylix
     ../../modules/common
     ../../modules/nixos
@@ -25,9 +26,10 @@ inputs.nixpkgs.lib.nixosSystem {
         disk.main.encrypted = true;
         disk.main.impermanence.enable = true;
 
-        gnome.enable = true;
-        hyprland.enable = true;
+        # gnome.enable = true;
+        # hyprland.enable = true;
         # kde.enable = true;
+        niri.enable = true;
 
         dev.enable = true;
 

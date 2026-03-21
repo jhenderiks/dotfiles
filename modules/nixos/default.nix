@@ -22,6 +22,7 @@ in
     ./gnome.nix
     ./hyprland.nix
     ./kde.nix
+    ./niri.nix
   ];
 
   options = with lib; {
@@ -86,7 +87,10 @@ in
       user = {
         users = {
           isNormalUser = true;
-          extraGroups = [ "docker" "wheel" ];
+          extraGroups = [
+            "docker"
+            "wheel"
+          ];
           hashedPasswordFile = config.age.secrets.hashedPassword.path;
         };
       };

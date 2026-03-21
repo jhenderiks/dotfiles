@@ -47,6 +47,12 @@ in
       # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyodark.yaml";
       # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
 
+      cursor = {
+        name = "Bibata-Original-Classic";
+        package = pkgs.bibata-cursors;
+        size = 24;
+      };
+
       fonts = {
         monospace = {
           name = config.font.monospace;
