@@ -39,6 +39,7 @@ in
 
     stylix = {
       enable = true;
+      polarity = "dark";
 
       base16Scheme = "${pkgs.base16-schemes}/share/themes/framer.yaml";
       # base16Scheme = "${pkgs.base16-schemes}/share/themes/classic-dark.yaml";
@@ -56,7 +57,7 @@ in
       fonts = {
         monospace = {
           name = config.font.monospace;
-          # package = pkgs.nerd-fonts.fira-code;
+          package = pkgs.nerd-fonts.fira-code;
         };
       };
 

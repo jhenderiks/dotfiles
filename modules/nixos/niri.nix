@@ -43,13 +43,27 @@
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     environment.systemPackages = with pkgs; [
+      blueman
       brightnessctl
+      btop
+      nemo
       fuzzel
+      imv
       mako
+      mpv
+
+      networkmanagerapplet
+      pavucontrol
       playerctl
+      celluloid
       polkit_gnome
+      qalculate-gtk
+      swappy
       waybar
+      wdisplays
       wl-clipboard
+      xarchiver
+      zathura
     ];
 
     home-manager.sharedModules =
@@ -199,6 +213,111 @@
 
             programs.swaylock.enable = true;
 
+            services.swayidle = {
+              enable = true;
+              timeouts = [
+                {
+                  timeout = 300;
+                  command = "swaylock -f";
+                }
+                {
+                  timeout = 600;
+                  command = "niri msg action power-off-monitors";
+                  resumeCommand = "niri msg action power-on-monitors";
+                }
+                {
+                  timeout = 900;
+                  command = "systemctl suspend";
+                }
+              ];
+              events = {
+                before-sleep = "swaylock -f";
+              };
+            };
+
+            programs.fuzzel.enable = true;
+
+            services.kanshi = {
+              enable = true;
+              systemdTarget = "niri.service";
+              settings = [
+                {
+                  profile.name = "laptop";
+                  profile.outputs = [
+                    {
+                      criteria = "eDP-1";
+                      status = "enable";
+                      scale = 2.0;
+                    }
+                  ];
+                }
+                {
+                  profile.name = "triple";
+                  profile.outputs = [
+                    {
+                      criteria = "DP-3";
+                      status = "enable";
+                      scale = 1.0;
+                      position = "0,360";
+                      mode = "1920x1080@60.000Hz";
+                    }
+                    {
+                      criteria = "DP-4";
+                      status = "enable";
+                      scale = 1.0;
+                      position = "1920,0";
+                      mode = "2560x1440@59.951Hz";
+                    }
+                    {
+                      criteria = "eDP-1";
+                      status = "enable";
+                      scale = 2.0;
+                      position = "4480,0";
+                    }
+                  ];
+                }
+                {
+                  profile.name = "all";
+                  profile.outputs = [
+                    {
+                      criteria = "DP-3";
+                      status = "enable";
+                      scale = 1.0;
+                      position = "1440,360";
+                      mode = "1920x1080@60.000Hz";
+                    }
+                    {
+                      criteria = "DP-4";
+                      status = "enable";
+                      scale = 1.0;
+                      position = "3360,0";
+                      mode = "2560x1440@59.951Hz";
+                    }
+                    {
+                      criteria = "eDP-1";
+                      status = "enable";
+                      scale = 2.0;
+                      position = "5920,0";
+                    }
+                    {
+                      criteria = "DVI-I-2";
+                      status = "enable";
+                      scale = 1.5;
+                      position = "2720,1440";
+                      mode = "1920x1280@60.000Hz";
+                    }
+                    {
+                      criteria = "DVI-I-1";
+                      status = "enable";
+                      scale = 1.5;
+                      position = "4000,1440";
+                      mode = "1920x1280@60.000Hz";
+                    }
+                  ];
+                }
+              ];
+            };
+
             programs.niri.settings = {
               spawn-at-startup = [
                 { command = [ "waybar" ]; }
@@ -287,20 +406,44 @@
                 "Mod+Ctrl+End".action = move-column-to-last;
 
                 # Focus monitor
-                "Mod+Shift+H".action = focus-monitor-left;
-                "Mod+Shift+J".action = focus-monitor-down;
-                "Mod+Shift+K".action = focus-monitor-up;
-                "Mod+Shift+L".action = focus-monitor-right;
+                "Mod+Shift+H" = {
+                  action = focus-monitor-left;
+                  hotkey-overlay.title = "Focus Monitor Left";
+                };
+                "Mod+Shift+J" = {
+                  action = focus-monitor-down;
+                  hotkey-overlay.title = "Focus Monitor Down";
+                };
+                "Mod+Shift+K" = {
+                  action = focus-monitor-up;
+                  hotkey-overlay.title = "Focus Monitor Up";
+                };
+                "Mod+Shift+L" = {
+                  action = focus-monitor-right;
+                  hotkey-overlay.title = "Focus Monitor Right";
+                };
                 "Mod+Shift+Left".action = focus-monitor-left;
                 "Mod+Shift+Down".action = focus-monitor-down;
                 "Mod+Shift+Up".action = focus-monitor-up;
                 "Mod+Shift+Right".action = focus-monitor-right;
 
                 # Move column to monitor
-                "Mod+Shift+Ctrl+H".action = move-column-to-monitor-left;
-                "Mod+Shift+Ctrl+J".action = move-column-to-monitor-down;
-                "Mod+Shift+Ctrl+K".action = move-column-to-monitor-up;
-                "Mod+Shift+Ctrl+L".action = move-column-to-monitor-right;
+                "Mod+Shift+Ctrl+H" = {
+                  action = move-column-to-monitor-left;
+                  hotkey-overlay.title = "Move to Monitor Left";
+                };
+                "Mod+Shift+Ctrl+J" = {
+                  action = move-column-to-monitor-down;
+                  hotkey-overlay.title = "Move to Monitor Down";
+                };
+                "Mod+Shift+Ctrl+K" = {
+                  action = move-column-to-monitor-up;
+                  hotkey-overlay.title = "Move to Monitor Up";
+                };
+                "Mod+Shift+Ctrl+L" = {
+                  action = move-column-to-monitor-right;
+                  hotkey-overlay.title = "Move to Monitor Right";
+                };
                 "Mod+Shift+Ctrl+Left".action = move-column-to-monitor-left;
                 "Mod+Shift+Ctrl+Down".action = move-column-to-monitor-down;
                 "Mod+Shift+Ctrl+Up".action = move-column-to-monitor-up;
@@ -315,17 +458,38 @@
                 "Mod+Ctrl+C".action = center-visible-columns;
 
                 # Resize
-                "Mod+R".action = switch-preset-column-width;
-                "Mod+Shift+R".action = switch-preset-window-height;
+                "Mod+R" = {
+                  action = switch-preset-column-width;
+                  hotkey-overlay.title = "Cycle Preset Widths";
+                };
+                "Mod+Shift+R" = {
+                  action = switch-preset-window-height;
+                  hotkey-overlay.title = "Cycle Preset Heights";
+                };
                 "Mod+Ctrl+R".action = reset-window-height;
-                "Mod+F".action = maximize-column;
+                "Mod+F" = {
+                  action = maximize-column;
+                  hotkey-overlay.title = "Maximize Column";
+                };
                 "Mod+Shift+F".action = fullscreen-window;
                 "Mod+M".action = maximize-window-to-edges;
                 "Mod+Ctrl+F".action = expand-column-to-available-width;
-                "Mod+Minus".action = set-column-width "-10%";
-                "Mod+Equal".action = set-column-width "+10%";
-                "Mod+Shift+Minus".action = set-window-height "-10%";
-                "Mod+Shift+Equal".action = set-window-height "+10%";
+                "Mod+Minus" = {
+                  action = set-column-width "-10%";
+                  hotkey-overlay.title = "Shrink Width";
+                };
+                "Mod+Equal" = {
+                  action = set-column-width "+10%";
+                  hotkey-overlay.title = "Grow Width";
+                };
+                "Mod+Shift+Minus" = {
+                  action = set-window-height "-10%";
+                  hotkey-overlay.title = "Shrink Height";
+                };
+                "Mod+Shift+Equal" = {
+                  action = set-window-height "+10%";
+                  hotkey-overlay.title = "Grow Height";
+                };
 
                 # Column display
                 "Mod+W".action = toggle-column-tabbed-display;
@@ -394,11 +558,11 @@
 
                 # Media (allow-when-locked)
                 "XF86AudioRaiseVolume" = {
-                  action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+" "-l" "1.0";
+                  action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+" "-l" "1.0";
                   allow-when-locked = true;
                 };
                 "XF86AudioLowerVolume" = {
-                  action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-";
+                  action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-";
                   allow-when-locked = true;
                 };
                 "XF86AudioMute" = {
@@ -426,11 +590,11 @@
                   allow-when-locked = true;
                 };
                 "XF86MonBrightnessUp" = {
-                  action = spawn "brightnessctl" "--class=backlight" "set" "+10%";
+                  action = spawn "brightnessctl" "--class=backlight" "set" "+5%";
                   allow-when-locked = true;
                 };
                 "XF86MonBrightnessDown" = {
-                  action = spawn "brightnessctl" "--class=backlight" "set" "10%-";
+                  action = spawn "brightnessctl" "--class=backlight" "set" "5%-";
                   allow-when-locked = true;
                 };
 
