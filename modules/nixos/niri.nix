@@ -17,6 +17,7 @@
   };
 
   config = lib.mkIf config.niri.enable {
+
     programs.niri = {
       enable = true;
       package = inputs.niri.packages.${pkgs.system}.niri-unstable.overrideAttrs (_: {
@@ -43,6 +44,10 @@
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     environment.systemPackages = with pkgs; [
+      (writeShellScriptBin "niri-kill-focused" ''
+        pid=$(niri msg focused-window 2>/dev/null | grep -oP 'PID: \K[0-9]+')
+        [ -n "$pid" ] && kill -9 "$pid"
+      '')
       blueman
       brightnessctl
       btop
@@ -379,6 +384,7 @@
                 "Mod+T".action = spawn "ghostty";
                 "Mod+D".action = spawn "fuzzel";
                 "Mod+Q".action = close-window;
+                "Mod+Shift+Q".action = spawn "niri-kill-focused";
                 "Super+Alt+L".action = spawn "swaylock";
 
                 # Focus
