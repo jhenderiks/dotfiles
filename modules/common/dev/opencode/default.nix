@@ -8,7 +8,7 @@
 let
   # Pinned version and hashes
   # To update: run ./scripts/update-opencode.sh
-  version = "1.1.48";
+  version = "1.3.17";
 
   # Base URL for the release
   baseUrl = "https://github.com/anomalyco/opencode/releases/download/v${version}";
@@ -17,19 +17,19 @@ let
   sources = {
     x86_64-linux = {
       url = "${baseUrl}/opencode-linux-x64.tar.gz";
-      sha256 = "sha256-dSSIDDIhVDTgj8LqGlrKvjSRdFyKh1IjaDDQf8gegLw="; # v1.1.48
+      sha256 = "sha256-GeVAhAz9BK/r7ZLP5n3ODNbEJe1fcp75RugHH3diBak="; # v1.3.17
     };
     aarch64-linux = {
       url = "${baseUrl}/opencode-linux-arm64.tar.gz";
-      sha256 = "sha256-9MF9SbPb7KBLno63gCWcsS5qC+/puKaZgWrgClIWHrU="; # v1.1.48
+      sha256 = "sha256-NFKT7SnHA888Sw5pbbUMNYbJc6TU/5Dx21tsu7ss7ks="; # v1.3.17
     };
     x86_64-darwin = {
       url = "${baseUrl}/opencode-darwin-x64.zip";
-      sha256 = "sha256-Ywn9u9kUTkszfVN2w5QkgNUltMcYGGU+PBi7LgM1xL8="; # v1.1.48
+      sha256 = "sha256-VUthAQJsZAxOX21PT3c42LKEAVXsp1uTrAutnVx1bA8="; # v1.3.17
     };
     aarch64-darwin = {
       url = "${baseUrl}/opencode-darwin-arm64.zip";
-      sha256 = "sha256-qEFBN53Qx6KxEb+W226Lz23EOCvPWFNIEyOd02IYKqU="; # v1.1.48
+      sha256 = "sha256-FEvtkU6MwAS6T3n9AdYfGtEhpkF+E++X3G/oZlyJA7s="; # v1.3.17
     };
   };
 
