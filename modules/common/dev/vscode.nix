@@ -7,8 +7,9 @@
 }:
 
 let
-  open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
-  vscode-marketplace = inputs.nix-vscode-extensions.extensions.${pkgs.system}.vscode-marketplace;
+  open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.stdenv.hostPlatform.system}.open-vsx;
+  vscode-marketplace =
+    inputs.nix-vscode-extensions.extensions.${pkgs.stdenv.hostPlatform.system}.vscode-marketplace;
 in
 {
   options = with lib; {

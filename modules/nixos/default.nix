@@ -67,7 +67,7 @@ in
               templates = "$HOME/templates";
               videos = "$HOME/media/videos";
               extraConfig = {
-                XDG_DEV_DIR = "$HOME/dev";
+                DEV = "$HOME/dev";
               };
             };
           };
