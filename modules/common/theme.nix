@@ -33,7 +33,12 @@ in
   config = {
     fonts.packages = packages;
 
-    home-manager.sharedModules = [ { fonts.fontconfig = fontconfig; } ];
+    home-manager.sharedModules = [
+      {
+        fonts.fontconfig = fontconfig;
+        gtk.gtk4.theme = config.gtk.theme or null;
+      }
+    ];
 
     nixos.fonts.fontconfig = fontconfig;
 
