@@ -7,6 +7,7 @@
 
 {
   imports = [
+    ./agent-deck.nix
     ./cursor.nix
     ./docker.nix
     ./ghostty.nix
@@ -31,6 +32,7 @@
     ghostty.enable = true;
     kitty.enable = true;
     mattermost.enable = true;
+    agent-deck.enable = true;
     opencode.enable = true;
     # vscode.enable = true;
 
