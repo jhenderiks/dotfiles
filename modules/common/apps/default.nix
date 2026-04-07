@@ -9,6 +9,7 @@
     ./keepassxc.nix
     ./ledger-live.nix
     ./mattermost.nix
+    ./opencode-desktop.nix
     ./slack.nix
     ./spotify.nix
     ./steam.nix

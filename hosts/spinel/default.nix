@@ -58,6 +58,7 @@ inputs.nixpkgs.lib.nixosSystem {
         keepassxc.enable = true;
         ledger-live.enable = true;
         # nordvpn.enable = true; # TODO: switch to surfshark / proton
+        opencode-desktop.enable = true;
         slack.enable = true;
         spotify.enable = true;
         steam.enable = true;
