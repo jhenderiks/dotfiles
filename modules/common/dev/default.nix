@@ -25,14 +25,13 @@
   };
 
   config = lib.mkIf config.dev.enable {
-    cursor.enable = true;
     discord.enable = true;
     docker.enable = true;
     ghostty.enable = true;
     kitty.enable = true;
     mattermost.enable = true;
     opencode.enable = true;
-    # vscode.enable = true;
+    vscode.enable = true;
 
     environment.systemPackages = with pkgs; [
       jq

@@ -21,13 +21,16 @@ in
 
       package = mkOption {
         type = types.package;
-        default = pkgs.vscodium;
+        default = pkgs.vscode;
       };
     };
   };
 
   config = lib.mkIf config.vscode.enable {
-    unfreePackages = [ "visual-studio-code" ];
+    unfreePackages = [
+      "vscode"
+      "vscode-extension-ms-vscode-remote-remote-ssh"
+    ];
 
     home-manager.sharedModules = [
       {
@@ -46,12 +49,12 @@ in
               (with open-vsx; [
                 golang.go
                 hashicorp.terraform
-                jeanp413.open-remote-ssh
                 jnoortheen.nix-ide
                 ms-azuretools.vscode-docker
                 ms-kubernetes-tools.vscode-kubernetes-tools
                 redhat.vscode-yaml
               ])
+              [ pkgs.vscode-extensions.ms-vscode-remote.remote-ssh ]
             ];
 
             userSettings = {
