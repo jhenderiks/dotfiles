@@ -1,65 +1,71 @@
-# AGENTS.md
+# PROJECT KNOWLEDGE BASE
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+## OVERVIEW
+Personal Nix flake for macOS and NixOS machines. Root flow is: choose a host in `flake.nix`, compose shared modules from `modules/`, then drive install/rebuild through the shell wrappers in `make` and `cmd/`.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
-
-## 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+## STRUCTURE
+```text
+./
+├── flake.nix              # active flake outputs; exported hosts live here
+├── make                   # command dispatcher; not a GNU Makefile
+├── cmd/                   # install/rebuild/config/hardware/remote entrypoints
+├── hosts/                 # host-specific systems and host-only modules
+├── modules/common/        # shared options, apps, shell, services, dev tools
+├── modules/macos/         # nix-darwin layer
+├── modules/nixos/         # NixOS layer
+├── scripts/               # one-off utilities; currently opencode updater
+├── secrets.nix            # secret wiring
+└── result/                # Nix build artifact; ignored
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+## WHERE TO LOOK
+| Task | Location | Notes |
+|---|---|---|
+| Enable or retire a machine | `flake.nix` | `work` and `spinel` are currently exported; other hosts are commented out |
+| Add host-specific behavior | `hosts/<name>/default.nix` | Host files import shared + platform layers, then add one inline module |
+| Add shared apps/dev/shell/services | `modules/common/` | Split by domain; aggregators live in each subtree `default.nix` |
+| Change macOS behavior | `modules/macos/` | Homebrew, shell activation, keyboard, system defaults |
+| Change NixOS behavior | `modules/nixos/` | Desktop modules plus disk layout API |
+| Rebuild or install systems | `make`, `cmd/` | `make` exports `REPO_ROOT`/`fail` used by several scripts |
+| Update pinned opencode package | `scripts/update-opencode.sh`, `modules/common/dev/opencode/` | Updater script rewrites hashes in the derivation |
 
----
+## ENTRY MAP
+| Entry | Role |
+|---|---|
+| `flake.nix` | flake inputs + exported `darwinConfigurations` / `nixosConfigurations` |
+| `modules/common/default.nix` | shared imports, home-manager defaults, global nix settings |
+| `modules/common/options.nix` | cross-platform option surface (`macos.*`, `nixos.*`, `user.*`, `hostname`) |
+| `modules/macos/default.nix` | nix-darwin layer; merges `config.macos.*` |
+| `modules/nixos/default.nix` | NixOS layer; merges `config.nixos.*`, disk + desktop modules |
+| `make` | OS-aware command dispatcher into `cmd/<name>` or `cmd/<name>-<os>` |
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+## CONVENTIONS
+- Root orchestration stays in `flake.nix`; most behavior belongs in modules or host inline modules, not in flake outputs.
+- Shared top-level attrs are defined in `modules/common/options.nix`, then consumed via `config.macos.*`, `config.nixos.*`, and `config.user.*`.
+- Aggregator directories use `default.nix` to import leaf modules; leaf files usually own one concern.
+- Host files follow a stable pattern: import `../../modules/common`, import one platform layer, optionally add host-only files, then finish with an inline attrset module.
+- `make` is the intended entrypoint for operational commands. Several scripts in `cmd/` assume exported shell helpers and `REPO_ROOT` from `make`.
+- Nix formatting is expected through `nixfmt` (installed by `modules/common/dev/default.nix`).
+
+## ANTI-PATTERNS (THIS PROJECT)
+- Do not edit `hosts/*/hardware.nix`; those files are generated by `nixos-generate-config` and can be overwritten.
+- Do not treat `result/` as source; `.gitignore` excludes it as a build artifact.
+- Do not expect `cmd/install-linux` to work; it is intentionally a stub that exits with `Not implemented`.
+- Do not assume `cmd/config` produces a finished host. It writes a TODO-heavy template that still needs manual completion.
+- Do not run host rebuild/install flows without checking `flake.nix`; a host may exist under `hosts/` but still be commented out from exports.
+
+## UNIQUE STYLES
+- Platform-specific pass-through attrs are centralized as `macos.*` and `nixos.*` in `options.nix`, then merged in platform layers.
+- User defaults are opinionated: username `justin`, shell `fish`, GitHub username `jhenderiks`.
+- The repo packages third-party tools directly in Nix (`opencode`, `opencode-desktop`) and pairs them with update automation.
+- Desktop environment modules under `modules/nixos/` are toggle-driven (`niri.enable`, `kde.enable`, etc.) rather than per-host forks.
+
+## COMMANDS
+```bash
+nix flake check
+./scripts/update-opencode.sh --check-only
+```
+
+## NOTES
+- This repo has no formal test suite or CI workflow checked in; validation is mainly `nix flake check`, rebuilds, and manual verification.
+- `scripts/update-opencode.sh` creates a `.backup` file transiently, then removes it after rewriting the derivation.
