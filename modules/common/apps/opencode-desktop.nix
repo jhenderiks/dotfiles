@@ -27,6 +27,11 @@ let
       glib
       gtk3
       libsoup_3
+      stdenv.cc.cc.lib
+      gst_all_1.gstreamer
+      gst_all_1.gst-plugins-base
+      gst_all_1.gst-plugins-bad
+      gst_all_1.gst-plugins-good
       webkitgtk_4_1
     ];
 
@@ -36,6 +41,15 @@ let
 
     preFixup = ''
       gappsWrapperArgs+=(
+        --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]}"
+        --prefix GST_PLUGIN_SYSTEM_PATH_1_0 : "${
+          lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" [
+            pkgs.gst_all_1.gstreamer
+            pkgs.gst_all_1.gst-plugins-base
+            pkgs.gst_all_1.gst-plugins-bad
+            pkgs.gst_all_1.gst-plugins-good
+          ]
+        }"
         --set GTK_THEME "adw-gtk3-dark"
       )
     '';
