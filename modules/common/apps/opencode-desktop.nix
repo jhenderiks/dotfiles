@@ -6,7 +6,7 @@
 }:
 
 let
-  version = "1.3.17";
+  version = "1.4.10";
 
   opencodeDesktop = pkgs.stdenvNoCC.mkDerivation {
     pname = "opencode-desktop";
@@ -14,7 +14,14 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-desktop-linux-amd64.deb";
-      sha256 = "sha256-M8ZYuwVDyLQ6XJYELoTTy6To/xaXYm1AXkrdbkjtPm8=";
+      sha256 = "sha256-25XJw0VRNgauIWfZEk/IFrxf+r0QgP2F8RcAaUSAgBs=";
+      curlOptsList = [
+        "--http1.1"
+        "--retry"
+        "5"
+        "--retry-delay"
+        "2"
+      ];
     };
 
     nativeBuildInputs = with pkgs; [

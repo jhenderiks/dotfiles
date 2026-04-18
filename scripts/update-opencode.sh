@@ -14,6 +14,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 OPENCODE_NIX="${DOTFILES_DIR}/modules/common/dev/opencode/default.nix"
+OPENCODE_DESKTOP_NIX="${DOTFILES_DIR}/modules/common/apps/opencode-desktop.nix"
 
 # GitHub API
 API_URL="https://api.github.com/repos/anomalyco/opencode/releases/latest"
@@ -21,7 +22,7 @@ API_URL="https://api.github.com/repos/anomalyco/opencode/releases/latest"
 # Check dependencies
 check_deps() {
     local missing=()
-    for cmd in curl jq nix-prefetch-url; do
+    for cmd in curl jq nix; do
         if ! command -v "$cmd" &> /dev/null; then
             missing+=("$cmd")
         fi
@@ -29,17 +30,19 @@ check_deps() {
     
     if [ ${#missing[@]} -ne 0 ]; then
         echo -e "${RED}Error: Missing required commands: ${missing[*]}${NC}"
-        echo "Please install them: nix-shell -p curl jq nix-prefetch-url"
+        echo "Please install them: nix-shell -p curl jq nix"
         exit 1
     fi
 }
 
-# Fetch latest release info
-fetch_latest() {
+fetch_release() {
     echo "Fetching latest release info..." >&2
-    local response
-    response=$(curl -s -H "Accept: application/vnd.github.v3+json" "$API_URL")
-    
+    curl -s -H "Accept: application/vnd.github.v3+json" "$API_URL"
+}
+
+fetch_latest() {
+    local response="$1"
+
     local tag_name
     tag_name=$(echo "$response" | jq -r '.tag_name')
     
@@ -56,58 +59,57 @@ fetch_latest() {
 
 # Get current version from nix file
 get_current_version() {
-    grep -E '^\s+version\s*=\s*"[^"]+"' "$OPENCODE_NIX" | head -1 | sed 's/.*"\([^"]*\)".*/\1/'
+    local nix_file="$1"
+    grep -E '^\s+version\s*=\s*"[^"]+"' "$nix_file" | head -1 | sed 's/.*"\([^"]*\)".*/\1/'
 }
 
-# Compute hash for a URL
-compute_hash() {
-    local url="$1"
-    echo "Computing hash for: $url" >&2
-    
-    # nix-prefetch-url outputs the base32 hash, convert to SRI format
-    local hash
-    hash=$(nix-prefetch-url --type sha256 "$url" 2>/dev/null)
-    
-    if [ $? -ne 0 ] || [ -z "$hash" ]; then
-        echo -e "${RED}Error: Failed to compute hash for $url${NC}" >&2
+get_asset_hash() {
+    local response="$1"
+    local asset_name="$2"
+
+    local digest
+    digest=$(echo "$response" | jq -r --arg name "$asset_name" '.assets[] | select(.name == $name) | .digest' | head -1)
+
+    if [ -z "$digest" ] || [ "$digest" = "null" ]; then
+        echo -e "${RED}Error: Could not find digest for ${asset_name}${NC}" >&2
         return 1
     fi
-    
-    # Convert to SRI format
-    local sri_hash
-    sri_hash=$(nix --extra-experimental-features nix-command hash to-base64 --type sha256 "$hash" 2>/dev/null)
-    
-    echo "sha256-$sri_hash"
+
+    if [[ "$digest" != sha256:* ]]; then
+        echo -e "${RED}Error: Unsupported digest format for ${asset_name}: ${digest}${NC}" >&2
+        return 1
+    fi
+
+    nix hash convert --hash-algo sha256 --to sri "${digest#sha256:}"
 }
 
-# Update the nix file
-update_nix_file() {
+update_nix_files() {
     local version="$1"
     local linux_x64_hash="$2"
     local linux_arm64_hash="$3"
     local darwin_x64_hash="$4"
     local darwin_arm64_hash="$5"
+    local desktop_linux_amd64_hash="$6"
     
     echo "Updating ${OPENCODE_NIX}..."
-    
-    # Create backup
-    cp "$OPENCODE_NIX" "${OPENCODE_NIX}.backup"
-    
-    # Update version
-    sed -i "s/version = \"[^\"]*\";/version = \"${version}\";/" "$OPENCODE_NIX"
-    
-    # Update hashes - using a more careful approach
-    # Read the file, replace hashes in the sources attrset
-    
-    local temp_file
-    temp_file=$(mktemp)
-    
-    # Use awk to replace hashes in the sources section
+    echo "Updating ${OPENCODE_DESKTOP_NIX}..."
+
+    local opencode_temp_file
+    local desktop_temp_file
+    opencode_temp_file=$(mktemp)
+    desktop_temp_file=$(mktemp)
+
     awk -v lx="$linux_x64_hash" \
         -v la="$linux_arm64_hash" \
         -v dx="$darwin_x64_hash" \
         -v da="$darwin_arm64_hash" \
+        -v ver="$version" \
         '
+        !done_version && /version = "[^"]*";/ {
+            sub(/version = "[^"]*";/, "version = \"" ver "\";")
+            done_version = 1
+        }
+
         /^\s+x86_64-linux = \{/ { in_linux_x64 = 1 }
         /^\s+aarch64-linux = \{/ { in_linux_arm64 = 1 }
         /^\s+x86_64-darwin = \{/ { in_darwin_x64 = 1 }
@@ -140,12 +142,26 @@ update_nix_file() {
         }
         
         { print }
-    ' "$OPENCODE_NIX" > "$temp_file"
+    ' "$OPENCODE_NIX" > "$opencode_temp_file"
+
+    awk -v ver="$version" -v dh="$desktop_linux_amd64_hash" '
+        !done_version && /version = "[^"]*";/ {
+            sub(/version = "[^"]*";/, "version = \"" ver "\";")
+            done_version = 1
+        }
+
+        !done_hash && /sha256 = "sha256-/ {
+            sub(/sha256 = "[^"]*";/, "sha256 = \"" dh "\";")
+            done_hash = 1
+        }
+
+        { print }
+    ' "$OPENCODE_DESKTOP_NIX" > "$desktop_temp_file"
+
+    mv "$opencode_temp_file" "$OPENCODE_NIX"
+    mv "$desktop_temp_file" "$OPENCODE_DESKTOP_NIX"
     
-    mv "$temp_file" "$OPENCODE_NIX"
-    rm -f "${OPENCODE_NIX}.backup"
-    
-    echo -e "${GREEN}Successfully updated opencode.nix to version ${version}${NC}"
+    echo -e "${GREEN}Successfully updated opencode packages to version ${version}${NC}"
 }
 
 # Main
@@ -158,56 +174,69 @@ main() {
     
     check_deps
     
-    local current_version
-    current_version=$(get_current_version)
+    local current_cli_version
+    local current_desktop_version
+    current_cli_version=$(get_current_version "$OPENCODE_NIX")
+    current_desktop_version=$(get_current_version "$OPENCODE_DESKTOP_NIX")
     
-    echo "Current version: $current_version"
-    
+    echo "Current CLI version: $current_cli_version"
+    echo "Current desktop version: $current_desktop_version"
+
+    local release
+    release=$(fetch_release)
+
     local latest_version
-    latest_version=$(fetch_latest)
+    latest_version=$(fetch_latest "$release")
     
     echo "Latest version: $latest_version"
     
-    if [ "$current_version" = "$latest_version" ]; then
+    if [ "$current_cli_version" != "$current_desktop_version" ]; then
+        echo -e "${YELLOW}Version drift detected: CLI ${current_cli_version}, desktop ${current_desktop_version}${NC}"
+    fi
+
+    if [ "$current_cli_version" = "$latest_version" ] && [ "$current_desktop_version" = "$latest_version" ]; then
         echo -e "${GREEN}Already up to date!${NC}"
         exit 0
     fi
     
-    echo -e "${YELLOW}Update available: ${current_version} → ${latest_version}${NC}"
+    echo -e "${YELLOW}Update available: CLI ${current_cli_version} / desktop ${current_desktop_version} → ${latest_version}${NC}"
     
     if [ "$check_only" = true ]; then
         exit 0
     fi
     
     echo ""
-    echo "Computing hashes for all platforms..."
-    
-    local base_url="https://github.com/anomalyco/opencode/releases/download/v${latest_version}"
+    echo "Reading release digests for all platforms..."
     
     # Compute hashes
     local linux_x64_hash
     local linux_arm64_hash
     local darwin_x64_hash
     local darwin_arm64_hash
+    local desktop_linux_amd64_hash
     
-    linux_x64_hash=$(compute_hash "${base_url}/opencode-linux-x64.tar.gz")
-    linux_arm64_hash=$(compute_hash "${base_url}/opencode-linux-arm64.tar.gz")
-    darwin_x64_hash=$(compute_hash "${base_url}/opencode-darwin-x64.zip")
-    darwin_arm64_hash=$(compute_hash "${base_url}/opencode-darwin-arm64.zip")
+    linux_x64_hash=$(get_asset_hash "$release" "opencode-linux-x64.tar.gz")
+    linux_arm64_hash=$(get_asset_hash "$release" "opencode-linux-arm64.tar.gz")
+    darwin_x64_hash=$(get_asset_hash "$release" "opencode-darwin-x64.zip")
+    darwin_arm64_hash=$(get_asset_hash "$release" "opencode-darwin-arm64.zip")
+    desktop_linux_amd64_hash=$(get_asset_hash "$release" "opencode-desktop-linux-amd64.deb")
     
     echo ""
     echo "Linux x64:    $linux_x64_hash"
     echo "Linux arm64:  $linux_arm64_hash"
     echo "Darwin x64:   $darwin_x64_hash"
     echo "Darwin arm64: $darwin_arm64_hash"
+    echo "Desktop deb:  $desktop_linux_amd64_hash"
     
     echo ""
-    update_nix_file "$latest_version" "$linux_x64_hash" "$linux_arm64_hash" "$darwin_x64_hash" "$darwin_arm64_hash"
+    update_nix_files "$latest_version" "$linux_x64_hash" "$linux_arm64_hash" "$darwin_x64_hash" "$darwin_arm64_hash" "$desktop_linux_amd64_hash"
     
     echo ""
-    echo -e "${YELLOW}Changes made to ${OPENCODE_NIX}${NC}"
+    echo -e "${YELLOW}Changes made to ${OPENCODE_NIX} and ${OPENCODE_DESKTOP_NIX}${NC}"
     echo "Review the changes with: git diff"
     echo "Then commit with: git commit -m 'Update opencode to v${latest_version}'"
 }
 
-main "$@"
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+    main "$@"
+fi
