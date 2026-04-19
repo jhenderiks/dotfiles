@@ -9,11 +9,11 @@
     ./keepassxc.nix
     ./ledger-live.nix
     ./mattermost.nix
-    ./opencode-desktop.nix
     ./slack.nix
     ./spotify.nix
     ./steam.nix
     ./telegram.nix
+    ./t3code.nix
     ./zoom.nix
   ];
 }
