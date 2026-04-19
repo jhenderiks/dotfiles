@@ -6,6 +6,21 @@
 }:
 
 let
+  user = config.user.name;
+  home = config.users.users.${user}.home;
+  serverConfig = {
+    "$schema" = "https://opencode.ai/config.json";
+    server = {
+      inherit (config.opencode.server)
+        cors
+        hostname
+        mdns
+        mdnsDomain
+        port
+        ;
+    };
+  };
+
   opencode = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "opencode";
     version = "1.14.18";
@@ -174,9 +189,64 @@ in
       default = opencode;
       description = "The opencode package to install. Defaults to the repo-pinned source build so it can track newer releases than nixpkgs without using release asset tarballs.";
     };
+
+    server = {
+      enable = lib.mkEnableOption "OpenCode web server";
+
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 4096;
+        description = "Port for the OpenCode web server.";
+      };
+
+      hostname = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        description = "Hostname for the OpenCode web server to bind to.";
+      };
+
+      mdns = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable mDNS discovery for the OpenCode web server.";
+      };
+
+      mdnsDomain = lib.mkOption {
+        type = lib.types.str;
+        default = "opencode.local";
+        description = "mDNS domain name advertised by the OpenCode web server.";
+      };
+
+      cors = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "Additional allowed CORS origins for the OpenCode web server.";
+      };
+    };
   };
 
-  config = lib.mkIf config.opencode.enable {
-    environment.systemPackages = [ config.opencode.package ];
-  };
+  config = lib.mkMerge [
+    (lib.mkIf config.opencode.enable {
+      environment.systemPackages = [ config.opencode.package ];
+    })
+
+    (lib.mkIf config.opencode.server.enable {
+      opencode.enable = true;
+
+      home-manager.users.${user}.home.file.".config/opencode/opencode.json".text = builtins.toJSON serverConfig;
+
+      nixos.systemd.user.services.opencode-web = {
+        description = "OpenCode web server";
+        wantedBy = [ "default.target" ];
+
+        serviceConfig = {
+          ExecStart = "${lib.getExe config.opencode.package} web";
+          Environment = [ "BROWSER=${pkgs.coreutils}/bin/true" ];
+          Restart = "on-failure";
+          RestartSec = "5s";
+          WorkingDirectory = home;
+        };
+      };
+    })
+  ];
 }
