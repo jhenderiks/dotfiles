@@ -6,107 +6,165 @@
 }:
 
 let
-  # Pinned version and hashes
-  # To update: run ./scripts/update-opencode.sh
-  version = "1.4.10";
-
-  # Base URL for the release
-  baseUrl = "https://github.com/anomalyco/opencode/releases/download/v${version}";
-
-  # Platform-specific sources
-  sources = {
-    x86_64-linux = {
-      url = "${baseUrl}/opencode-linux-x64.tar.gz";
-      sha256 = "sha256-FLOGTW1x3zQs58eJ9LDW5SS2Dte8tJbmX5bJlZ6ngBA="; # v1.4.10
-    };
-    aarch64-linux = {
-      url = "${baseUrl}/opencode-linux-arm64.tar.gz";
-      sha256 = "sha256-qh/2EpUcYZ8dK6/o2Dqi5VxvRqcZwU2eCe4v0fzzkCY="; # v1.4.10
-    };
-    x86_64-darwin = {
-      url = "${baseUrl}/opencode-darwin-x64.zip";
-      sha256 = "sha256-ji9IjEwwpH7WyRlrbNLct40it2vrbZXUSwVwC7uu5D0="; # v1.4.10
-    };
-    aarch64-darwin = {
-      url = "${baseUrl}/opencode-darwin-arm64.zip";
-      sha256 = "sha256-gDAaDxB6uX7iykaAE0V/ZTEzCgwY/0d0xFgE07svzG4="; # v1.4.10
-    };
-  };
-
-  # Current platform source
-  currentSource =
-    sources.${pkgs.stdenv.hostPlatform.system}
-      or (throw "opencode: unsupported platform ${pkgs.stdenv.hostPlatform.system}");
-
-  # Is this a zip file? (Darwin builds)
-  isZip = lib.hasSuffix ".zip" currentSource.url;
-
-  # Package derivation
-  # Note: dontStrip = true is required because opencode is a Bun-compiled binary
-  # that embeds JavaScript/resources in the ELF file. Stripping corrupts these
-  # embedded resources, leaving only the base Bun runtime.
-  opencode = pkgs.stdenv.mkDerivation rec {
+  opencode = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "opencode";
-    inherit version;
+    version = "1.14.18";
 
-    src = pkgs.fetchurl {
-      url = currentSource.url;
-      sha256 = currentSource.sha256;
-      curlOptsList = [
-        "--http1.1"
-        "--retry"
-        "5"
-        "--retry-delay"
-        "2"
-      ];
+    src = pkgs.fetchFromGitHub {
+      owner = "anomalyco";
+      repo = "opencode";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-wEjksPEPzEe2BCySqjorMXrbnBWNCp+YAaCiZWV2ZIc=";
     };
 
-    nativeBuildInputs = lib.optionals isZip [ pkgs.unzip ];
+    node_modules = pkgs.stdenvNoCC.mkDerivation {
+      pname = "${finalAttrs.pname}-node_modules";
+      inherit (finalAttrs) version src;
 
-    dontBuild = true;
-    dontConfigure = true;
-    # CRITICAL: Bun-compiled binaries break when stripped
-    dontStrip = true;
+      impureEnvVars = lib.fetchers.proxyImpureEnvVars ++ [
+        "GIT_PROXY_COMMAND"
+        "SOCKS_SERVER"
+      ];
 
-    sourceRoot = ".";
+      nativeBuildInputs = [
+        pkgs.bun
+        pkgs.writableTmpDirAsHomeHook
+      ];
+
+      dontConfigure = true;
+
+      buildPhase = ''
+        runHook preBuild
+
+        bun install \
+          --cpu="*" \
+          --ignore-scripts \
+          --no-progress \
+          --os="*"
+
+        bun --bun ./nix/scripts/canonicalize-node-modules.ts
+        bun --bun ./nix/scripts/normalize-bun-binaries.ts
+
+        runHook postBuild
+      '';
+
+      installPhase = ''
+        runHook preInstall
+
+        mkdir -p $out
+        find . -type d -name node_modules -exec cp -R --parents {} $out \;
+
+        runHook postInstall
+      '';
+
+      dontFixup = true;
+      outputHash = "sha256-nj088y5+Ja+Lc2Em4s4ZSoS2/lkWC41smVYlynXas9E=";
+      outputHashAlgo = "sha256";
+      outputHashMode = "recursive";
+    };
+
+    nativeBuildInputs = [
+      pkgs.bun
+      pkgs.nodejs
+      pkgs.installShellFiles
+      pkgs.makeBinaryWrapper
+      pkgs.models-dev
+      pkgs.writableTmpDirAsHomeHook
+    ];
+
+    postPatch = ''
+      substituteInPlace packages/script/src/index.ts \
+        --replace-fail 'throw new Error(`This script requires bun@''${expectedBunVersionRange}' \
+                       'console.warn(`Warning: This script requires bun@''${expectedBunVersionRange}'
+    '';
+
+    configurePhase = ''
+      runHook preConfigure
+
+      cp -R ${finalAttrs.node_modules}/. .
+      patchShebangs node_modules
+      patchShebangs packages/*/node_modules
+
+      runHook postConfigure
+    '';
+
+    env.MODELS_DEV_API_JSON = "${pkgs.models-dev}/dist/_api.json";
+    env.OPENCODE_VERSION = finalAttrs.version;
+    env.OPENCODE_CHANNEL = "stable";
+
+    buildPhase = ''
+      runHook preBuild
+
+      cd ./packages/opencode
+      bun --bun ./script/build.ts --single --skip-install
+      bun --bun ./script/schema.ts schema.json
+
+      runHook postBuild
+    '';
 
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/bin
-      cp opencode $out/bin/
+      install -Dm755 dist/opencode-*/bin/opencode $out/bin/opencode
+      wrapProgram $out/bin/opencode \
+       --prefix PATH : ${
+         lib.makeBinPath (
+           [ pkgs.ripgrep ] ++ lib.optionals pkgs.stdenvNoCC.hostPlatform.isDarwin [ pkgs.sysctl ]
+         )
+       }
 
-      # Make it executable
-      chmod +x $out/bin/opencode
-
-      # Optional: add shell completions if they exist in the tarball
-      if [ -d "completions" ]; then
-        mkdir -p $out/share/opencode/completions
-        cp -r completions/* $out/share/opencode/completions/
-      fi
+      install -Dm644 schema.json $out/share/opencode/schema.json
 
       runHook postInstall
     '';
 
-    meta = with lib; {
-      description = "Open source AI coding agent";
-      homepage = "https://opencode.ai";
-      license = licenses.mit;
-      maintainers = [ ];
-      platforms = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      sourceProvenance = with sourceTypes; [ binaryNativeCode ];
+    postInstall = lib.optionalString (pkgs.stdenvNoCC.buildPlatform.canExecute pkgs.stdenvNoCC.hostPlatform) ''
+      installShellCompletion --cmd opencode \
+        --bash <($out/bin/opencode completion) \
+        --zsh <(SHELL=/bin/zsh $out/bin/opencode completion)
+    '';
+
+    nativeInstallCheckInputs = [
+      pkgs.versionCheckHook
+      pkgs.writableTmpDirAsHomeHook
+    ];
+    doInstallCheck = true;
+    versionCheckKeepEnvironment = [ "HOME" ];
+    versionCheckProgramArg = "--version";
+
+    passthru = {
+      jsonschema = "${placeholder "out"}/share/opencode/schema.json";
+      updateScript = pkgs.nix-update-script {
+        extraArgs = [
+          "--subpackage"
+          "node_modules"
+        ];
+      };
     };
-  };
+
+    meta = {
+      description = "AI coding agent built for the terminal";
+      homepage = "https://github.com/anomalyco/opencode";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [
+        delafthi
+        DuskyElf
+        graham33
+        superherointj
+      ];
+      sourceProvenance = with lib.sourceTypes; [ fromSource ];
+      platforms = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+      mainProgram = "opencode";
+      badPlatforms = [ "x86_64-darwin" ];
+    };
+  });
 in
 {
-  imports = [
-    ./updater.nix
-  ];
 
   options.opencode = {
     enable = lib.mkEnableOption "opencode AI coding agent";
@@ -114,7 +172,7 @@ in
     package = lib.mkOption {
       type = lib.types.package;
       default = opencode;
-      description = "The opencode package to install";
+      description = "The opencode package to install. Defaults to the repo-pinned source build so it can track newer releases than nixpkgs without using release asset tarballs.";
     };
   };
 
