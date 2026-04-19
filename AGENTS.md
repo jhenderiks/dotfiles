@@ -13,7 +13,7 @@ Personal Nix flake for macOS and NixOS machines. Root flow is: choose a host in 
 ├── modules/common/        # shared options, apps, shell, services, dev tools
 ├── modules/macos/         # nix-darwin layer
 ├── modules/nixos/         # NixOS layer
-├── scripts/               # one-off utilities; currently opencode updater
+├── scripts/               # one-off utilities
 ├── secrets.nix            # secret wiring
 └── result/                # Nix build artifact; ignored
 ```
@@ -27,7 +27,7 @@ Personal Nix flake for macOS and NixOS machines. Root flow is: choose a host in 
 | Change macOS behavior | `modules/macos/` | Homebrew, shell activation, keyboard, system defaults |
 | Change NixOS behavior | `modules/nixos/` | Desktop modules plus disk layout API |
 | Rebuild or install systems | `make`, `cmd/` | `make` exports `REPO_ROOT`/`fail` used by several scripts |
-| Update pinned opencode package | `scripts/update-opencode.sh`, `modules/common/dev/opencode/` | Updater script rewrites hashes in the derivation |
+| Adjust opencode packaging | `modules/common/dev/opencode/` | Repo pins a custom source build for the CLI without GitHub release assets |
 
 ## ENTRY MAP
 | Entry | Role |
@@ -57,15 +57,14 @@ Personal Nix flake for macOS and NixOS machines. Root flow is: choose a host in 
 ## UNIQUE STYLES
 - Platform-specific pass-through attrs are centralized as `macos.*` and `nixos.*` in `options.nix`, then merged in platform layers.
 - User defaults are opinionated: username `justin`, shell `fish`, GitHub username `jhenderiks`.
-- The repo packages third-party tools directly in Nix (`opencode`, `opencode-desktop`) and pairs them with update automation.
+- The repo exposes the CLI package through `opencode.package` and defaults it to a repo-pinned source build so versions can move ahead of nixpkgs.
 - Desktop environment modules under `modules/nixos/` are toggle-driven (`niri.enable`, `kde.enable`, etc.) rather than per-host forks.
 
 ## COMMANDS
 ```bash
 nix flake check
-./scripts/update-opencode.sh --check-only
+nix build --no-link .#nixosConfigurations.spinel.config.opencode.package
 ```
 
 ## NOTES
 - This repo has no formal test suite or CI workflow checked in; validation is mainly `nix flake check`, rebuilds, and manual verification.
-- `scripts/update-opencode.sh` creates a `.backup` file transiently, then removes it after rewriting the derivation.
