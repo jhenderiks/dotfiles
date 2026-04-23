@@ -37,7 +37,7 @@
       jq
       nixfmt
       nixos-anywhere
-      zed-editor-fhs
+      ungoogled-chromium
     ];
 
     programs.nix-ld = {
