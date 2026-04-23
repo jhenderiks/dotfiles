@@ -8,18 +8,17 @@
 let
   user = config.user.name;
   home = config.users.users.${user}.home;
-  serverConfig = {
-    "$schema" = "https://opencode.ai/config.json";
-    server = {
-      inherit (config.opencode.server)
-        cors
-        hostname
-        mdns
-        mdnsDomain
-        port
-        ;
-    };
-  };
+  serverArgs = [
+    "web"
+    "--port"
+    (toString config.opencode.server.port)
+    "--hostname"
+    config.opencode.server.hostname
+    "--mdns-domain"
+    config.opencode.server.mdnsDomain
+  ]
+  ++ lib.optionals config.opencode.server.mdns [ "--mdns" ]
+  ++ lib.concatMap (origin: [ "--cors" origin ]) config.opencode.server.cors;
 
   opencode = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "opencode";
@@ -233,14 +232,12 @@ in
     (lib.mkIf config.opencode.server.enable {
       opencode.enable = true;
 
-      home-manager.users.${user}.home.file.".config/opencode/opencode.json".text = builtins.toJSON serverConfig;
-
       nixos.systemd.user.services.opencode-web = {
         description = "OpenCode web server";
         wantedBy = [ "default.target" ];
 
         serviceConfig = {
-          ExecStart = "${lib.getExe config.opencode.package} web";
+          ExecStart = "${lib.escapeShellArgs ([ (lib.getExe config.opencode.package) ] ++ serverArgs)}";
           Environment = [ "BROWSER=${pkgs.coreutils}/bin/true" ];
           Restart = "on-failure";
           RestartSec = "5s";
