@@ -34,10 +34,10 @@
     vscode.enable = true;
 
     environment.systemPackages = with pkgs; [
+      chromium
       jq
       nixfmt
       nixos-anywhere
-      ungoogled-chromium
     ];
 
     programs.nix-ld = {
