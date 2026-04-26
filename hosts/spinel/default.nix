@@ -62,6 +62,7 @@ inputs.nixpkgs.lib.nixosSystem {
         slack.enable = true;
         spotify.enable = true;
         steam.enable = true;
+        stt.enable = true;
         # sunshine.enable = true;
         syncthing.enable = true;
         telegram.enable = true;
