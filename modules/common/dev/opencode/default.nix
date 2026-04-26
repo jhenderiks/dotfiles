@@ -22,13 +22,13 @@ let
 
   opencode = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "opencode";
-    version = "1.14.18";
+    version = "1.14.25";
 
     src = pkgs.fetchFromGitHub {
       owner = "anomalyco";
       repo = "opencode";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-wEjksPEPzEe2BCySqjorMXrbnBWNCp+YAaCiZWV2ZIc=";
+      hash = "sha256-v1aaq4HWAJ5wZm9bUeaRkyKr0iYjdOhigr/I31wwhEk=";
     };
 
     node_modules = pkgs.stdenvNoCC.mkDerivation {
@@ -72,7 +72,7 @@ let
       '';
 
       dontFixup = true;
-      outputHash = "sha256-nj088y5+Ja+Lc2Em4s4ZSoS2/lkWC41smVYlynXas9E=";
+      outputHash = "sha256-NQWd6GhidirjQvFUzBWdaNjY5prSmkTX1VkrRYISqK4=";
       outputHashAlgo = "sha256";
       outputHashMode = "recursive";
     };
