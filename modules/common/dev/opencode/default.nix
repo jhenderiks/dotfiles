@@ -6,20 +6,6 @@
 }:
 
 let
-  user = config.user.name;
-  home = config.users.users.${user}.home;
-  serverArgs = [
-    "web"
-    "--port"
-    (toString config.opencode.server.port)
-    "--hostname"
-    config.opencode.server.hostname
-    "--mdns-domain"
-    config.opencode.server.mdnsDomain
-  ]
-  ++ lib.optionals config.opencode.server.mdns [ "--mdns" ]
-  ++ lib.concatMap (origin: [ "--cors" origin ]) config.opencode.server.cors;
-
   opencode = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "opencode";
     version = "1.14.25";
@@ -189,61 +175,9 @@ in
       description = "The opencode package to install. Defaults to the repo-pinned source build so it can track newer releases than nixpkgs without using release asset tarballs.";
     };
 
-    server = {
-      enable = lib.mkEnableOption "OpenCode web server";
-
-      port = lib.mkOption {
-        type = lib.types.port;
-        default = 4096;
-        description = "Port for the OpenCode web server.";
-      };
-
-      hostname = lib.mkOption {
-        type = lib.types.str;
-        default = "127.0.0.1";
-        description = "Hostname for the OpenCode web server to bind to.";
-      };
-
-      mdns = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Enable mDNS discovery for the OpenCode web server.";
-      };
-
-      mdnsDomain = lib.mkOption {
-        type = lib.types.str;
-        default = "opencode.local";
-        description = "mDNS domain name advertised by the OpenCode web server.";
-      };
-
-      cors = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ ];
-        description = "Additional allowed CORS origins for the OpenCode web server.";
-      };
-    };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf config.opencode.enable {
-      environment.systemPackages = [ config.opencode.package ];
-    })
-
-    (lib.mkIf config.opencode.server.enable {
-      opencode.enable = true;
-
-      nixos.systemd.user.services.opencode-web = {
-        description = "OpenCode web server";
-        wantedBy = [ "default.target" ];
-
-        serviceConfig = {
-          ExecStart = "${lib.escapeShellArgs ([ (lib.getExe config.opencode.package) ] ++ serverArgs)}";
-          Environment = [ "BROWSER=${pkgs.coreutils}/bin/true" ];
-          Restart = "on-failure";
-          RestartSec = "5s";
-          WorkingDirectory = home;
-        };
-      };
-    })
-  ];
+  config = lib.mkIf config.opencode.enable {
+    environment.systemPackages = [ config.opencode.package ];
+  };
 }

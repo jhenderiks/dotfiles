@@ -32,7 +32,6 @@ inputs.nixpkgs.lib.nixosSystem {
         niri.enable = true;
 
         dev.enable = true;
-        opencode.server.enable = true;
 
         programs.eden = {
           # enable = true;
