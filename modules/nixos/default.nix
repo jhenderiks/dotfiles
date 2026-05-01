@@ -20,6 +20,7 @@ in
     inputs.home-manager.nixosModules.home-manager
     ./disk
     ./gnome.nix
+    ./handy.nix
     ./hyprland.nix
     ./kde.nix
     ./niri.nix
