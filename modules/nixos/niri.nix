@@ -95,6 +95,7 @@
           {
             programs.waybar = {
               enable = true;
+              systemd.enable = true;
               settings.mainBar = {
                 layer = "top";
                 position = "top";
@@ -151,6 +152,8 @@
                   tooltip-format = "{ifname}: {ipaddr}/{cidr}";
                 };
                 battery = {
+                  bat = "BAT1";
+                  adapter = "ACAD";
                   format = "{icon} {capacity}%";
                   format-charging = "󰂄 {capacity}%";
                   format-icons = [
@@ -338,7 +341,6 @@
 
             programs.niri.settings = {
               spawn-at-startup = [
-                { command = [ "waybar" ]; }
                 { command = [ "mako" ]; }
                 { command = [ "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1" ]; }
               ];
