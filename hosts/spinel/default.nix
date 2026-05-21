@@ -38,7 +38,10 @@ inputs.nixpkgs.lib.nixosSystem {
           # enableCache = true;
         };
 
-        # TODO: handle tailscale (and sudo) impermanence
+        security.sudo.extraConfig = ''
+          Defaults lecture=never
+        '';
+
         services.tailscale = {
           enable = true;
           openFirewall = true;

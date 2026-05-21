@@ -83,6 +83,10 @@
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
         {
+          directory = "/var/lib/tailscale";
+          mode = "u=rwx,g=,o=";
+        }
+        {
           directory = "/var/lib/colord";
           user = "colord";
           group = "colord";
