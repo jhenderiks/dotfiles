@@ -1,2 +1,8 @@
 .DS_Store
 result
+
+# Local machine secrets/configuration
+hosts/*/.config.nix
+hosts/*/wireguard.local.nix
+hosts/*/wireguard/*.conf
+hosts/*/wireguard/*.key

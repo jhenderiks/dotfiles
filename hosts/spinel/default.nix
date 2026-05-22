@@ -49,6 +49,7 @@ inputs.nixpkgs.lib.nixosSystem {
 
         displaylink.enable = true;
         handy.enable = true;
+        wireguard.enable = true;
 
         hardware.logitech.wireless = {
           enable = true;

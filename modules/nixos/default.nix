@@ -24,6 +24,7 @@ in
     ./hyprland.nix
     ./kde.nix
     ./niri.nix
+    ./wireguard.nix
   ];
 
   options = with lib; {
