@@ -1,5 +1,6 @@
 {
   imports = [
+    ./activitywatch.nix
     ./bitwarden.nix
     ./brave.nix
     ./chrome.nix

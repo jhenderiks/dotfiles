@@ -58,6 +58,7 @@ inputs.nixpkgs.lib.nixosSystem {
 
         # TODO: nextdns
 
+        activitywatch.enable = true;
         brave.enable = true;
         firefox.enable = true;
         keepassxc.enable = true;

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -12,6 +17,9 @@
 
   config = lib.mkIf config.firefox.enable {
     macos.homebrew.casks = [ "firefox" ];
-    nixos.environment.systemPackages = [ pkgs.firefox ];
+    nixos.programs.firefox = {
+      enable = true;
+      package = pkgs.firefox;
+    };
   };
 }
