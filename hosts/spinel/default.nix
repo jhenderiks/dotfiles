@@ -33,6 +33,11 @@ inputs.nixpkgs.lib.nixosSystem {
 
         dev.enable = true;
 
+        environment.systemPackages = with pkgs; [
+          gnome-clocks
+          termdown
+        ];
+
         programs.eden = {
           # enable = true;
           # enableCache = true;
