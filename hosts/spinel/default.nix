@@ -53,7 +53,10 @@ inputs.nixpkgs.lib.nixosSystem {
         };
 
         displaylink.enable = true;
-        handy.enable = true;
+        # Disabled while diagnosing stuck modifier state after lid/resume.
+        # Handy's Linux shortcut backend uses raw input grabs, and its logs
+        # correlate with the keyboard state getting wedged on this host.
+        handy.enable = false;
         wireguard.enable = true;
 
         hardware.logitech.wireless = {
