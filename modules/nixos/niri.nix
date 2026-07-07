@@ -38,6 +38,14 @@
 
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
+    programs.dconf.enable = true;
+
+    services.avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+
     services.greetd = {
       enable = true;
       settings = {
@@ -48,10 +56,26 @@
       };
     };
 
+    services.gvfs.enable = true;
+
     services.pipewire = {
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
+    };
+
+    services.udisks2.enable = true;
+
+    networking.firewall.allowedUDPPorts = [ 3702 ];
+
+    environment.etc = lib.mkIf (!config.services.samba.enable) {
+      "samba/smb.conf".text = ''
+        [global]
+          client min protocol = SMB2
+          client max protocol = SMB3
+          name resolve order = host bcast lmhosts wins
+          workgroup = WORKGROUP
+      '';
     };
 
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
@@ -80,6 +104,7 @@
       waybar
       wdisplays
       wl-clipboard
+      wsdd
       xarchiver
       zathura
     ];
@@ -90,6 +115,15 @@
         colors = config.lib.stylix.colors;
       in
       [
+        {
+          dconf = {
+            enable = true;
+            settings."org/gnome/system/smb" = {
+              display-mode = "merged";
+              workgroup = "WORKGROUP";
+            };
+          };
+        }
         (
           { config, ... }:
           {

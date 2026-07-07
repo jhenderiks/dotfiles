@@ -33,6 +33,10 @@ inputs.nixpkgs.lib.nixosSystem {
 
         dev.enable = true;
 
+        networking.resolvconf.extraConfig = ''
+          search_domains='home.arpa'
+        '';
+
         environment.systemPackages = with pkgs; [
           gnome-clocks
           termdown
