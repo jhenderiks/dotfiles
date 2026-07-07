@@ -353,11 +353,13 @@
               layout = {
                 gaps = 4;
                 preset-column-widths = [
+                  { proportion = 1.0 / 6.0; }
+                  { proportion = 1.0 / 4.0; }
                   { proportion = 1.0 / 3.0; }
                   { proportion = 1.0 / 2.0; }
                   { proportion = 2.0 / 3.0; }
                 ];
-                default-column-width.proportion = 1.0 / 2.0;
+                default-column-width.proportion = 1.0 / 3.0;
                 border = lib.mkForce {
                   enable = true;
                   width = 1;
