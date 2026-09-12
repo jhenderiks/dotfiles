@@ -18,6 +18,7 @@ in
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
+    ./cleanup.nix
     ./disk
     ./gnome.nix
     ./handy.nix

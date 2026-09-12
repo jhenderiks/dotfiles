@@ -26,6 +26,8 @@ inputs.nixpkgs.lib.nixosSystem {
         disk.main.encrypted = true;
         disk.main.impermanence.enable = true;
 
+        cleanup.enable = true;
+
         # gnome.enable = true;
         # hyprland.enable = true;
         # kde.enable = true;
@@ -39,7 +41,45 @@ inputs.nixpkgs.lib.nixosSystem {
 
         environment.systemPackages = with pkgs; [
           gnome-clocks
+          simple-scan
           termdown
+        ];
+
+        hardware.sane = {
+          enable = true;
+          extraBackends = [ pkgs.sane-airscan ];
+        };
+
+        hardware.printers = {
+          ensureDefaultPrinter = "Brother_HL-L2390DW";
+          ensurePrinters = [
+            {
+              name = "Brother_HL-L2390DW";
+              description = "Brother HL-L2390DW";
+              deviceUri = "ipp://10.8.17.6:631/ipp/print";
+              model = "everywhere";
+            }
+          ];
+        };
+
+        systemd.services.ensure-printers = {
+          wants = [
+            "avahi-daemon.service"
+            "network-online.target"
+          ];
+          after = [
+            "avahi-daemon.service"
+            "network-online.target"
+          ];
+          serviceConfig = {
+            Restart = "on-failure";
+            RestartSec = "5s";
+          };
+        };
+
+        users.users.${config.user.name}.extraGroups = [
+          "lp"
+          "scanner"
         ];
 
         programs.eden = {
