@@ -20,6 +20,9 @@ inputs.nixpkgs.lib.nixosSystem {
         hostname = "spinel";
 
         boot.loader.systemd-boot.enable = true;
+        boot.extraModprobeConfig = ''
+          options snd-intel-dspcfg dsp_driver=3
+        '';
 
         disk.main.enable = true;
         disk.main.device = "/dev/nvme0n1";
