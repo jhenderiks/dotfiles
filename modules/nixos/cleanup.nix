@@ -69,10 +69,10 @@ in
       };
     };
 
-    services.journald.extraConfig = ''
-      SystemMaxUse=1G
-      SystemKeepFree=10G
-      MaxRetentionSec=30day
-    '';
+    services.journald.settings.Journal = {
+      SystemMaxUse = "1G";
+      SystemKeepFree = "10G";
+      MaxRetentionSec = "30day";
+    };
   };
 }

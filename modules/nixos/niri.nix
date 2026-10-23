@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
@@ -20,9 +19,7 @@
 
     programs.niri = {
       enable = true;
-      package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable.overrideAttrs (_: {
-        doCheck = false;
-      });
+      package = pkgs.niri;
     };
 
     xdg.portal.config.niri = {
@@ -374,6 +371,8 @@
             };
 
             programs.niri.settings = {
+              xwayland-satellite.path = "${pkgs.xwayland-satellite}/bin/xwayland-satellite";
+
               spawn-at-startup = [
                 { command = [ "mako" ]; }
                 { command = [ "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1" ]; }

@@ -7,6 +7,7 @@
     ./chromium.nix
     ./discord.nix
     ./firefox.nix
+    ./gfn.nix
     ./keepassxc.nix
     ./ledger-live.nix
     ./mattermost.nix

@@ -116,6 +116,7 @@ inputs.nixpkgs.lib.nixosSystem {
         activitywatch.enable = true;
         brave.enable = true;
         firefox.enable = true;
+        gfn.enable = true;
         keepassxc.enable = true;
         ledger-live.enable = true;
         # nordvpn.enable = true; # TODO: switch to surfshark / proton
