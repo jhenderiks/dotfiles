@@ -65,7 +65,7 @@ inputs.nixpkgs.lib.nixosSystem {
           ];
         };
 
-        systemd.services.ensure-printers = {
+        systemd.services.cups = {
           wants = [
             "avahi-daemon.service"
             "network-online.target"
@@ -74,6 +74,7 @@ inputs.nixpkgs.lib.nixosSystem {
             "avahi-daemon.service"
             "network-online.target"
           ];
+          unitConfig.StartLimitIntervalSec = 0;
           serviceConfig = {
             Restart = "on-failure";
             RestartSec = "5s";
