@@ -24,6 +24,27 @@ in
   config = lib.mkIf config.activitywatch.enable {
     chromium.extensions = [ awWebChromiumExtensionId ];
 
+    nixpkgs.overlays = [
+      (_: prev: {
+        # The binary wrapper requires each argument as a separate list element.
+        aw-qt = prev.aw-qt.overrideAttrs {
+          makeWrapperArgs = [
+            "--suffix"
+            "PATH"
+            ":"
+            (lib.makeBinPath [ prev.xdg-utils ])
+          ];
+        };
+
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (_: pythonPrev: {
+            # aw-core requires Peewee 3; nixpkgs defaults to Peewee 4.
+            aw-core = pythonPrev.aw-core.override { peewee = pythonPrev.peewee_3; };
+          })
+        ];
+      })
+    ];
+
     nixos.environment.systemPackages = [
       pkgs.activitywatch
       pkgs.awatcher

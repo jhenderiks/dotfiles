@@ -41,7 +41,25 @@ in
       age.identityPaths = [ identityPath ];
       age.secrets.hashedPassword.file = ../../hosts/${config.hostname}/password.age;
 
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages_latest.extend (
+        _: prev:
+        let
+          # These packages install modules manually, bypassing Kbuild's signing step.
+          # Sign after stripping so the module aggregator can collect their certificates.
+          signModules =
+            package:
+            package.overrideAttrs (old: {
+              postFixup = (old.postFixup or "") + ''
+                find "$out/lib/modules" -name '*.ko' \
+                  -exec ${lib.getExe pkgs.buildPackages.kmodigest} {} \;
+              '';
+            });
+        in
+        {
+          evdi = signModules prev.evdi;
+          framework-laptop-kmod = signModules prev.framework-laptop-kmod;
+        }
+      );
 
       boot.loader.systemd-boot.configurationLimit = 16;
 
